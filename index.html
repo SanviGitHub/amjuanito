@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full scroll-smooth">
+<html lang="es" class="h-full bg-white scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,13 +10,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide-react@latest/dist/lucide.min.js" defer></script>
-<script src="https://unpkg.com/motion@10.18.0/dist/motion.min.js" defer></script>
-    <!-- NOTA: Lucide y Motion se cargan al final del <body> ahora -->
+    <!-- Lucide Icons (CORREGIDO: Se quitó "-react" de la URL) -->
+    <!-- <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script> --> <!-- ELIMINADO DE AQUÍ -->
+    <!-- (NUEVO) Animate.css - Biblioteca Extra -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        /* --- TEMA REWORKEADO --- */
-        
+        /* --- NUEVO TEMA: MINIMALISTA "FINO" + ROJO ACENTO --- */
+        :root {
+            --aj-dark: #111827; /* gray-900 */
+            --aj-text: #374151; /* gray-700 */
+            --aj-text-light: #6B7280; /* gray-500 */
+            --aj-gray-light: #F3F4F6; /* gray-100 */
+            --aj-white: #FFFFFF;
+            --aj-brand: #DC2626; /* red-600 */
+            --aj-brand-dark: #B91C1C; /* red-700 */
+        }
         html {
             scroll-behavior: smooth;
         }
@@ -25,122 +34,111 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             line-height: 1.6;
-            background-color: #f8fafc; /* gray-50 */
-            color: #111827; /* gray-900 */
+            background-color: var(--aj-white);
+            color: var(--aj-text);
         }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #e2e8f0; /* gray-200 */ }
+        /* Custom scrollbar (Estilo Fino) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--aj-gray-light);
+        }
         ::-webkit-scrollbar-thumb {
-            background-color: #94a3b8; /* gray-400 */
+            background-color: #BCBCC1;
             border-radius: 20px;
-            border: 2px solid #e2e8f0;
         }
-        ::-webkit-scrollbar-thumb:hover { background-color: #475569; /* gray-600 */ }
-
-        /* --- ESTILOS DE ADMIN REWORKEADOS --- */
-        .admin-gradient-bg {
-            background-image: linear-gradient(to top right, #1f2937, #374151); /* gray-800 to gray-700 */
-        }
-        
-        /* --- ESTILOS PÁGINA PÚBLICA REWORKEADOS --- */
-        
-        /* Header que se oculta/muestra */
-        .header-nav.is-hidden {
-            transform: translateY(-100%);
-        }
-        .header-nav {
-            transition: transform 0.3s ease-in-out;
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #9A9A9F;
         }
 
-        /* Nav Links Públicos (Se mantiene el ::after ya que no se puede con Tailwind) */
-        .nav-link {
-            position: relative;
-            transition: color 0.2s;
+        /* Ocultar flechas en input[type=number] */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -4px; /* Ajustado para que esté pegado al borde */
-            width: 100%;
-            height: 2px;
-            background-color: #2563eb; /* blue-600 */
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease-out;
+        input[type=number] {
+            -moz-appearance: textfield;
         }
-        .nav-link:hover::after,
-        .nav-link.is-active::after {
-            transform: scaleX(1);
+
+        /* Ocultar scrollbar de modal */
+        #car-form-modal::-webkit-scrollbar,
+        #delete-modal::-webkit-scrollbar,
+        #detalle-auto-modal::-webkit-scrollbar {
+            display: none;
         }
-        .nav-link.is-active {
-            color: #111827; /* gray-900 */
+        #car-form-modal,
+        #delete-modal,
+        #detalle-auto-modal {
+            -ms-overflow-style: none;  /* IE y Edge */
+            scrollbar-width: none;  /* Firefox */
         }
+
+        /* --- ANIMACIONES (Animate.css) --- */
         
-        /* Card de Auto (Pública) */
-        .car-card {
-            opacity: 0; /* Oculto para animación de scroll */
+        /* Ocultar elementos para animación */
+        .animate-on-scroll {
+            opacity: 0; /* Oculto hasta que el observer actúe */
         }
-        
-        /* Animación "shake" para login */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
+
+        /* Animación de pulso para botón de WhatsApp */
+        @keyframes pulse-wpp {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
         }
-        .animate-shake {
-            animation: shake 0.5s ease-in-out;
+        .btn-pulse-wpp {
+            animation: pulse-wpp 2s infinite;
         }
-        
     </style>
 </head>
-<body class="h-full bg-gray-50">
+<body class="h-full">
 
     <!-- Loader de App -->
-    <div id="app-loader" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-[100]">
-        <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo Automotores Juanito" class="w-64 h-auto animate-pulse rounded-xl">
-        <p id="app-loader-text" class="text-gray-600 mt-4">Cargando plataforma...</p>
+    <div id="app-loader" class="fixed inset-0 bg-aj-white flex flex-col items-center justify-center z-[100]">
+        <!-- (NUEVO) Logo con bordes redondeados -->
+        <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo Automotores Juanito" class="w-64 h-auto animate-pulse rounded-md">
+        <p id="app-loader-text" class="text-aj-text-light mt-4">Cargando plataforma...</p>
     </div>
 
     <!-- Contenido Principal -->
     <div id="app-content" class="min-h-full flex flex-col hidden">
         
-        <!-- Header (REWORKEADO - Fondo Blanco) -->
-        <header id="main-header" class="header-nav bg-white/90 backdrop-blur-lg sticky top-0 z-30 shadow-md">
+        <!-- Header (NUEVO ESTILO "APPLE") -->
+        <header class="bg-aj-white/80 backdrop-blur-lg sticky top-0 z-30 shadow-sm border-b border-gray-200">
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-20">
-                    <!-- Logo -->
-                    <a href="#home" class="flex-shrink-0 flex items-center gap-2" aria-label="Inicio - Automotores Juanito">
+                    <!-- Logo (NUEVO) Bordes redondeados -->
+                    <a href="#home" class="flex-shrink-0 flex items-center gap-2">
                         <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo Automotores Juanito" class="w-48 h-auto rounded-md">
                     </a>
-                    <!-- Navegación Pública (Desktop) -->
+                    <!-- Navegación Pública (Estilo Claro) -->
                     <div class="hidden sm:flex sm:space-x-8">
-                        <a href="#home" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 font-semibold is-active">Inicio</a>
-                        <a href="#ultimos-ingresos-section" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 font-semibold">Destacados</a>
-                        <a href="#catalogo-section" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 font-semibold">Catálogo</a>
-                        <a href="#contacto-section" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 font-semibold">Contacto</a>
-                        <a href="#admin" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 font-semibold">
+                        <a href="#home" class="nav-link border-b-2 border-aj-brand text-aj-dark inline-flex items-center px-1 pt-1 font-semibold">Inicio</a>
+                        <a href="#ultimos-ingresos-section" class="nav-link border-b-2 border-transparent text-aj-text-light hover:border-aj-brand hover:text-aj-dark inline-flex items-center px-1 pt-1 font-semibold">Destacados</a>
+                        <a href="#catalogo-section" class="nav-link border-b-2 border-transparent text-aj-text-light hover:border-aj-brand hover:text-aj-dark inline-flex items-center px-1 pt-1 font-semibold">Catálogo</a>
+                        <a href="#contacto-section" class="nav-link border-b-2 border-transparent text-aj-text-light hover:border-aj-brand hover:text-aj-dark inline-flex items-center px-1 pt-1 font-semibold">Contacto</a>
+                        <a href="#admin" class="nav-link border-b-2 border-transparent text-aj-text-light hover:border-aj-brand hover:text-aj-dark inline-flex items-center px-1 pt-1 font-semibold">
                             <i data-lucide="lock" class="w-4 h-4 mr-2"></i>Admin
                         </a>
                     </div>
                     <!-- Botón Mobile -->
                     <div class="sm:hidden">
-                        <button id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-600">
+                        <button id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-lg text-aj-text-light hover:text-aj-dark hover:bg-aj-gray-light focus:outline-none focus:ring-2 focus:ring-inset focus:ring-aj-brand">
                             <i data-lucide="menu" class="block h-6 w-6"></i>
                         </button>
                     </div>
                 </div>
             </nav>
-            <!-- Menú Mobile -->
-            <div id="mobile-menu" class="hidden sm:hidden bg-white border-t border-gray-200 shadow-lg">
-                <div class="pt-2 pb-4 space-y-1 p-2">
-                    <a href="#home" class="nav-link-mobile is-active block pl-3 pr-4 py-3 rounded-md text-base font-semibold text-gray-700 bg-blue-600 text-white">Inicio</a>
-                    <a href="#ultimos-ingresos-section" class="nav-link-mobile block pl-3 pr-4 py-3 rounded-md text-base font-semibold text-gray-700 hover:bg-gray-100">Destacados</a>
-                    <a href="#catalogo-section" class="nav-link-mobile block pl-3 pr-4 py-3 rounded-md text-base font-semibold text-gray-700 hover:bg-gray-100">Catálogo</a>
-                    <a href="#contacto-section" class="nav-link-mobile block pl-3 pr-4 py-3 rounded-md text-base font-semibold text-gray-700 hover:bg-gray-100">Contacto</a>
-                    <a href="#admin" class="nav-link-mobile block pl-3 pr-4 py-3 rounded-md text-base font-semibold text-gray-700 hover:bg-gray-100">
+            <!-- Menú Mobile (Estilo Claro) -->
+            <div id="mobile-menu" class="hidden sm:hidden bg-aj-white shadow-lg">
+                <div class="pt-2 pb-4 space-y-1">
+                    <a href="#home" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-aj-brand text-aj-dark font-semibold">Inicio</a>
+                    <a href="#ultimos-ingresos-section" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-aj-text-light font-semibold">Destacados</a>
+                    <a href="#catalogo-section" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-aj-text-light font-semibold">Catálogo</a>
+                    <a href="#contacto-section" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-aj-text-light font-semibold">Contacto</a>
+                    <a href="#admin" class="nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-aj-text-light font-semibold">
                         <i data-lucide="lock" class="w-4 h-4 mr-2 inline-block"></i>Admin
                     </a>
                 </div>
@@ -152,41 +150,80 @@
             <!-- Página: Inicio (Home) - AHORA CONTIENE TODO -->
             <section id="page-home" class="page-section">
                 
-                <!-- Hero Section (REWORKEADO) -->
-                <div class="bg-gray-900 text-white overflow-hidden" id="hero-section">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-40 text-center flex flex-col items-center">
-                        <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo Automotores Juanito" class="w-full max-w-lg mx-auto h-auto mb-6 opacity-0 rounded-xl" style="filter: drop-shadow(0 4px 10px rgba(0,122,255,0.3));" data-motion-target="hero-logo">
-                        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 opacity-0" data-motion-target="hero-title">Tu próximo auto está acá.</h1>
-                        <p class="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-10 opacity-0" data-motion-target="hero-subtitle">Más de 20 años de confianza en Jose C Paz.</p>
-                        <a href="#catalogo-section" class="btn-primary opacity-0 px-8 py-4 text-lg bg-white text-gray-900 hover:bg-gray-200 focus:ring-gray-200 focus:ring-offset-gray-900 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed" data-motion-target="hero-button">Ver Catálogo Completo</a>
+                <!-- Hero Section (NUEVO ESTILO CLARO) -->
+                <div id="home" class="bg-aj-white text-aj-dark overflow-hidden animate-on-scroll">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-40 text-center">
+                        <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo Automotores Juanito" class="w-full max-w-xl mx-auto h-auto mb-6 animate__animated animate__fadeInDown">
+                        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 animate__animated animate__fadeInDown" style="animation-delay: 0.2s;">Tu próximo auto está acá.</h1>
+                        <p class="text-xl md:text-2xl text-aj-text-light max-w-2xl mx-auto mb-10 animate__animated animate__fadeInDown" style="animation-delay: 0.4s;">Más de 20 años de confianza en Jose C Paz.</p>
+                        <!-- NUEVO BOTÓN "FINO" (OUTLINE) -->
+                        <a href="#catalogo-section" class="border-2 border-aj-brand text-aj-brand px-8 py-4 rounded-lg font-bold shadow-sm transition-all duration-300 ease-in-out hover:bg-aj-brand hover:text-white focus:outline-none focus:ring-2 focus:ring-aj-brand focus:ring-offset-2 transform hover:-translate-y-0.5 text-lg inline-flex items-center justify-center animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+                            <i data-lucide="search" class="w-5 h-5 mr-3"></i>Ver Catálogo Completo
+                        </a>
                     </div>
                 </div>
 
-                <!-- Sección Destacados -->
-                <section id="ultimos-ingresos-section" class="bg-gray-50 py-16 sm:py-24 overflow-hidden">
+                <!-- Sección Por Qué Elegirnos (Estilo Fino) -->
+                <section id="por-que-elegirnos" class="bg-aj-gray-light py-16 sm:py-24 animate-on-scroll">
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 text-center mb-12" data-motion-target="destacados-title">Últimos Ingresos</h2>
-                        <div id="home-destacados-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <!-- JS Rellena esto con .car-card -->
+                        <div class="text-center mb-16">
+                            <h2 class="text-3xl font-extrabold text-aj-dark sm:text-4xl">La confianza que buscás.</h2>
+                            <p class="mt-4 text-xl text-aj-text-light">Te acompañamos en cada paso.</p>
                         </div>
-                        <div id="home-destacados-loader" class="text-center py-12">
-                            <p class="text-gray-600 text-lg">Cargando destacados...</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                            <!-- Feature 1 -->
+                            <div class="text-center animate-on-scroll">
+                                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-100 text-aj-brand mx-auto mb-5">
+                                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-aj-dark mb-2">Usados Seleccionados</h3>
+                                <p class="text-aj-text-light">Todas nuestras unidades pasan por un riguroso chequeo mecánico para tu tranquilidad.</p>
+                            </div>
+                            <!-- Feature 2 -->
+                            <div class="text-center animate-on-scroll" style="animation-delay: 0.2s;">
+                                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-100 text-aj-brand mx-auto mb-5">
+                                    <i data-lucide="banknote" class="w-8 h-8"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-aj-dark mb-2">Financiación a Medida</h3>
+                                <p class="text-aj-text-light">Entregá tu usado o un anticipo y financiá el resto en cuotas fijas y en pesos.</p>
+                            </div>
+                            <!-- Feature 3 -->
+                            <div class="text-center animate-on-scroll" style="animation-delay: 0.4s;">
+                                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-100 text-aj-brand mx-auto mb-5">
+                                    <i data-lucide="file-text" class="w-8 h-8"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-aj-dark mb-2">Gestoría Propia</h3>
+                                <p class="text-aj-text-light">Nos encargamos de todo el papelerío. Te llevás el auto transferido y sin deudas.</p>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Página: Catálogo -->
-                <section id="catalogo-section" class="bg-white py-16 sm:py-24 overflow-hidden">
+                <!-- Sección Destacados (Estilo Fino) -->
+                <section id="ultimos-ingresos-section" class="bg-aj-white py-16 sm:py-24 animate-on-scroll">
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 text-center mb-12" data-motion-target="catalogo-title">Nuestro Catálogo</h2>
+                        <h2 class="text-3xl font-extrabold text-aj-dark text-center mb-12">Últimos Ingresos</h2>
+                        <div id="home-destacados-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- JS Rellena esto -->
+                        </div>
+                        <div id="home-destacados-loader" class="text-center">
+                            <p class="text-aj-text-light">Cargando destacados...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección Catálogo (Estilo Fino) - ¡ESTA SECCIÓN YA ESTABA! -->
+                <section id="catalogo-section" class="page-section bg-aj-gray-light py-16 sm:py-24 animate-on-scroll">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <h2 class="text-4xl font-extrabold text-aj-dark text-center mb-12">Nuestro Catálogo</h2>
                         
-                        <!-- Filtros -->
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-sm mb-12" data-motion-target="catalogo-filters">
+                        <!-- Filtros (Estilo Fino) -->
+                        <div class="bg-aj-white p-6 rounded-lg shadow-sm mb-12">
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <!-- Filtro Marca -->
                                 <div>
                                     <label for="filter-marca" class="block text-sm font-semibold text-gray-700 mb-1">Marca</label>
-                                    <select id="filter-marca" class="input-text block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                    <select id="filter-marca" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent text-base">
                                         <option value="">Todas las Marcas</option>
                                         <!-- JS Rellena esto -->
                                     </select>
@@ -194,7 +231,7 @@
                                 <!-- Filtro Precio -->
                                 <div>
                                     <label for="filter-precio" class="block text-sm font-semibold text-gray-700 mb-1">Precio (Máx)</label>
-                                    <select id="filter-precio" class="input-text block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                    <select id="filter-precio" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent text-base">
                                         <option value="">Cualquier Precio</option>
                                         <option value="5000000">$5.000.000</option>
                                         <option value="10000000">$10.000.000</option>
@@ -206,7 +243,7 @@
                                 <!-- Filtro Año -->
                                 <div>
                                     <label for="filter-ano" class="block text-sm font-semibold text-gray-700 mb-1">Año (Mín)</label>
-                                    <select id="filter-ano" class="input-text block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                    <select id="filter-ano" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent text-base">
                                         <option value="">Cualquier Año</option>
                                         <option value="2024">2024</option>
                                         <option value="2022">2022</option>
@@ -219,7 +256,7 @@
                                 <!-- Ordenar -->
                                 <div>
                                     <label for="filter-sort" class="block text-sm font-semibold text-gray-700 mb-1">Ordenar Por</label>
-                                    <select id="filter-sort" class="input-text block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                    <select id="filter-sort" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent text-base">
                                         <option value="recientes">Más Recientes</option>
                                         <option value="precio-asc">Precio (Menor a Mayor)</option>
                                         <option value="precio-desc">Precio (Mayor a Menor)</option>
@@ -230,63 +267,105 @@
 
                         <!-- Grid de Autos -->
                         <div id="catalogo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <!-- JS Rellena esto con .car-card -->
+                            <!-- JS Rellena esto -->
                         </div>
                         <div id="catalogo-loader" class="text-center py-12">
-                            <p class="text-gray-600 text-lg">Cargando vehículos...</p>
+                            <p class="text-aj-text-light text-lg">Cargando vehículos...</p>
                         </div>
                         <div id="catalogo-no-results" class="hidden text-center py-12">
                             <i data-lucide="search-x" class="w-16 h-16 mx-auto text-gray-400"></i>
-                            <p class="text-gray-700 text-xl mt-4">No se encontraron vehículos.</p>
-                            <p class="text-gray-600">Intentá cambiar los filtros de búsqueda.</p>
+                            <p class="text-aj-text-light text-xl mt-4">No se encontraron vehículos.</p>
+                            <p class="text-aj-text-light">Intentá cambiar los filtros de búsqueda.</p>
                         </div>
 
                     </div>
                 </section>
 
-                <!-- Página: Contacto -->
-                <section id="contacto-section" class="bg-gray-50 py-16 sm:py-24 overflow-hidden">
+                <!-- (REWORK) CÓMO COMPRAR -->
+                <section id="como-comprar" class="bg-aj-white py-16 sm:py-24 animate-on-scroll">
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 text-center mb-12" data-motion-target="contacto-title">Vení a visitarnos</h2>
+                        <div class="text-center mb-16">
+                            <h2 class="text-3xl font-extrabold text-aj-dark sm:text-4xl">Comprar tu auto es simple.</h2>
+                            <p class="mt-4 text-xl text-aj-text-light">En 3 simples pasos, te subís al auto de tus sueños.</p>
+                        </div>
+                        
+                        <!-- Pasos (Nuevo diseño) -->
+                        <div class="relative">
+                            <!-- Línea punteada (solo en desktop) -->
+                            <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200" style="transform: translateY(-2rem);"></div>
+                            
+                            <div class="relative grid grid-cols-1 md:grid-cols-3 gap-10">
+                                <!-- Paso 1 -->
+                                <div class="relative p-6 bg-aj-gray-light rounded-lg shadow-sm animate-on-scroll">
+                                    <div class="absolute -top-5 -left-5 w-16 h-16 flex items-center justify-center rounded-full bg-aj-brand text-white font-extrabold text-2xl shadow-lg">01</div>
+                                    <h3 class="text-2xl font-bold text-aj-dark mb-2 mt-8">Mirá el Catálogo</h3>
+                                    <p class="text-aj-text-light">Explorá todos nuestros vehículos disponibles y filtrá por marca, precio o año.</p>
+                                </div>
+                                <!-- Paso 2 -->
+                                <div class="relative p-6 bg-aj-gray-light rounded-lg shadow-sm animate-on-scroll" style="animation-delay: 0.2s;">
+                                    <div class="absolute -top-5 -left-5 w-16 h-16 flex items-center justify-center rounded-full bg-aj-brand text-white font-extrabold text-2xl shadow-lg">02</div>
+                                    <h3 class="text-2xl font-bold text-aj-dark mb-2 mt-8">Contactanos</h3>
+                                    <p class="text-aj-text-light">Mandanos un WhatsApp o llamanos para coordinar una visita y probar el auto.</p>
+                                </div>
+                                <!-- Paso 3 -->
+                                <div class="relative p-6 bg-aj-gray-light rounded-lg shadow-sm animate-on-scroll" style="animation-delay: 0.4s;">
+                                    <div class="absolute -top-5 -left-5 w-16 h-16 flex items-center justify-center rounded-full bg-aj-brand text-white font-extrabold text-2xl shadow-lg">03</div>
+                                    <h3 class="text-2xl font-bold text-aj-dark mb-2 mt-8">Retiralo en el Día</h3>
+                                    <p class="text-aj-text-light">Arreglamos los papeles y te vas manejando. ¡Así de fácil!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Página: Contacto (Estilo Fino) -->
+                <section id="contacto-section" class="page-section bg-aj-gray-light py-16 sm:py-24 animate-on-scroll">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <h2 class="text-4xl font-extrabold text-aj-dark text-center mb-12">Vení a visitarnos</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                             <!-- Info de Contacto -->
-                            <div class="bg-white p-8 rounded-xl shadow-xl" data-motion-target="contacto-info">
-                                <h3 class="text-2xl font-bold text-gray-900 mb-6">Hablá con nosotros</h3>
-                                <div class="space-y-6">
+                            <div class="bg-aj-white p-8 rounded-lg shadow-xl">
+                                <h3 class="text-2xl font-bold text-aj-dark mb-6">Hablá con nosotros</h3>
+                                <div class="space-y-5">
                                     <!-- Teléfono/Wpp -->
-                                    <a id="contact-wpp-link" href="#" target="_blank" class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <div class="flex items-center gap-4">
                                         <div class="bg-green-100 p-3 rounded-full">
                                             <i data-lucide="message-circle" class="w-6 h-6 text-green-600"></i>
                                         </div>
                                         <div>
-                                            <span class="block text-sm font-semibold text-gray-600">WhatsApp</span>
-                                            <span id="contact-wpp-text" class="text-lg font-bold text-blue-600 hover:underline">Cargando...</span>
+                                            <span class="block text-sm font-semibold text-aj-text-light">WhatsApp</span>
+                                            <a id="contact-wpp-link" href="#" target="_blank" class="text-lg font-bold text-green-600 hover:underline">
+                                                <span id="contact-wpp-text">Cargando...</span>
+                                            </a>
                                         </div>
-                                    </a>
+                                    </div>
                                     <!-- Ubicación -->
-                                    <a id="contact-map-link" href="#" target="_blank" class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <div class="flex items-center gap-4">
                                         <div class="bg-blue-100 p-3 rounded-full">
                                             <i data-lucide="map-pin" class="w-6 h-6 text-blue-600"></i>
                                         </div>
                                         <div>
-                                            <span class="block text-sm font-semibold text-gray-600">Dirección</span>
-                                            <span id="contact-map-text" class="text-lg font-bold text-gray-800 hover:underline">D Elia Maestro 4969, José C. Paz</span>
+                                            <span class="block text-sm font-semibold text-aj-text-light">Dirección</span>
+                                            <a id="contact-map-link" href="#" target="_blank" class="text-lg font-bold text-aj-dark hover:underline">
+                                                <span id="contact-map-text">D Elia Maestro 4969, José C. Paz</span>
+                                            </a>
                                         </div>
-                                    </a>
+                                    </div>
                                     <!-- Horario -->
-                                    <div class="flex items-center gap-4 p-4">
+                                    <div class="flex items-center gap-4">
                                         <div class="bg-yellow-100 p-3 rounded-full">
                                             <i data-lucide="clock" class="w-6 h-6 text-yellow-600"></i>
                                         </div>
                                         <div>
-                                            <span class="block text-sm font-semibold text-gray-600">Horarios</span>
-                                            <span id="contact-hours-text" class="text-lg font-bold text-gray-800">Lunes a Sábado: 9 a.m. – 7:15 p.m.</span>
+                                            <span class="block text-sm font-semibold text-aj-text-light">Horarios</span>
+                                            <span id="contact-hours-text" class="text-lg font-bold text-aj-dark">Lunes a Sábado: 9 a.m. – 7:15 p.m.</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <!-- Mapa -->
-                            <div class="bg-gray-200 rounded-xl shadow-xl overflow-hidden h-64 md:h-full" data-motion-target="contacto-map">
+                            <div class="bg-gray-300 rounded-lg shadow-xl overflow-hidden h-64 md:h-full">
                                 <iframe id="contact-map-iframe" class="w-full h-full"
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3287.619089201919!2d-58.70588102377481!3d-34.51261175373656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcbd0643b17c75%3A0x633d07d4e46358c!2sD'El%C3%ADa%2C+Maestro+4969%2C+B1665+Jos%C3%A9+C.+Paz%2C+Provincia+de+Buenos+Aires!5e0!3m2!1ses-419!2sar!4v1731037415442!5m2!1ses-419!2sar"
                                     style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
@@ -295,27 +374,27 @@
                         </div>
                     </div>
                 </section>
-            </section> <!-- CIERRE DE page-home -->
+            </section>
 
-            <!-- Página: Detalle de Auto (Modal) -->
-            <div id="detalle-auto-modal" class="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm hidden items-start justify-center p-4 overflow-y-auto">
-                <div class="bg-white w-full max-w-4xl rounded-lg shadow-2xl my-10 relative opacity-0 transform scale-95" data-motion-target="detalle-modal">
+            <!-- Página: Detalle de Auto (Modal) (Estilo Fino) -->
+            <div id="detalle-auto-modal" class="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm hidden items-start justify-center p-4 overflow-y-auto">
+                <div class="bg-aj-white w-full max-w-4xl rounded-lg shadow-2xl my-10 relative animate__animated animate__fadeInDown" style="animation-duration: 0.5s;">
                     <!-- Botón Cerrar -->
-                    <button id="detalle-auto-close-btn" class="absolute -top-3 -right-3 z-10 bg-gray-800 text-white rounded-full p-2 shadow-lg hover:bg-gray-900 transition-transform hover:scale-110">
+                    <button id="detalle-auto-close-btn" class="absolute -top-3 -right-3 z-10 bg-aj-dark text-aj-white rounded-full p-2 shadow-lg hover:bg-gray-700 transition-transform hover:scale-110">
                         <i data-lucide="x" class="w-6 h-6"></i>
                     </button>
                     <!-- Contenido del Modal -->
                     <div id="detalle-auto-content" class="overflow-hidden rounded-lg">
                         <!-- Loader -->
                         <div id="detalle-auto-loader" class="p-12 text-center">
-                            <p class="text-gray-600">Cargando auto...</p>
+                            <p class="text-aj-text-light">Cargando auto...</p>
                         </div>
                         <!-- Contenido Real -->
                         <div id="detalle-auto-body" class="hidden">
                             <!-- Galería -->
-                            <div class="bg-gray-900">
-                                <img id="detalle-auto-img-main" src="https://placehold.co/800x600/111827/4b5563?text=Cargando..." alt="Auto" class="w-full h-64 md:h-96 object-cover">
-                                <div id="detalle-auto-img-thumbs" class="flex p-2 gap-2">
+                            <div class="bg-black">
+                                <img id="detalle-auto-img-main" src="https://placehold.co/800x600/111111/555555?text=Cargando..." alt="Auto" class="w-full h-64 md:h-96 object-cover">
+                                <div id="detalle-auto-img-thumbs" class="flex p-2 gap-2 overflow-x-auto">
                                     <!-- JS Rellena esto -->
                                 </div>
                             </div>
@@ -324,39 +403,40 @@
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <!-- Columna Izquierda (Info) -->
                                     <div class="md:col-span-2">
-                                        <h2 id="detalle-auto-titulo" class="text-3xl md:text-4xl font-extrabold text-gray-900"></h2>
-                                        <p id="detalle-auto-precio" class="text-4xl font-bold text-blue-600 mt-2 mb-6"></p>
+                                        <h2 id="detalle-auto-titulo" class="text-3xl md:text-4xl font-extrabold text-aj-dark"></h2>
+                                        <p id="detalle-auto-precio" class="text-4xl font-bold text-aj-brand mt-2 mb-6"></p>
 
-                                        <div class="grid grid-cols-3 gap-4 text-center border-y border-gray-200 py-4 mb-6">
+                                        <div class="grid grid-cols-3 gap-4 text-center border-y border-aj-gray-light py-4 mb-6">
                                             <div>
-                                                <i data-lucide="calendar" class="w-8 h-8 mx-auto text-gray-500 mb-1"></i>
-                                                <span class="block text-sm font-semibold text-gray-500">Año</span>
-                                                <span id="detalle-auto-ano" class="block text-lg font-bold text-gray-900"></span>
+                                                <i data-lucide="calendar" class="w-8 h-8 mx-auto text-aj-text-light mb-1"></i>
+                                                <span class="block text-sm font-semibold text-aj-text-light">Año</span>
+                                                <span id="detalle-auto-ano" class="block text-lg font-bold text-aj-dark"></span>
                                             </div>
                                             <div>
-                                                <i data-lucide="gauge" class="w-8 h-8 mx-auto text-gray-500 mb-1"></i>
-                                                <span class="block text-sm font-semibold text-gray-500">Kilometraje</span>
-                                                <span id="detalle-auto-km" class="block text-lg font-bold text-gray-900"></span>
+                                                <i data-lucide="gauge" class="w-8 h-8 mx-auto text-aj-text-light mb-1"></i>
+                                                <span class="block text-sm font-semibold text-aj-text-light">Kilometraje</span>
+                                                <span id="detalle-auto-km" class="block text-lg font-bold text-aj-dark"></span>
                                             </div>
                                             <div>
-                                                <i data-lucide="car" class="w-8 h-8 mx-auto text-gray-500 mb-1"></i>
-                                                <span class="block text-sm font-semibold text-gray-500">Marca</span>
-                                                <span id="detalle-auto-marca" class="block text-lg font-bold text-gray-900"></span>
+                                                <i data-lucide="car" class="w-8 h-8 mx-auto text-aj-text-light mb-1"></i>
+                                                <span class="block text-sm font-semibold text-aj-text-light">Marca</span>
+                                                <span id="detalle-auto-marca" class="block text-lg font-bold text-aj-dark"></span>
                                             </div>
                                         </div>
 
-                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Descripción</h3>
-                                        <p id="detalle-auto-descripcion" class="text-gray-700 prose"></p>
+                                        <h3 class="text-xl font-bold text-aj-dark mb-2">Descripción</h3>
+                                        <p id="detalle-auto-descripcion" class="text-aj-text-light prose"></p>
                                     </div>
                                     <!-- Columna Derecha (Contacto) -->
                                     <div class="md:col-span-1">
-                                        <div class="bg-gray-100 p-6 rounded-lg shadow-sm sticky top-20">
-                                            <p class="font-bold text-lg text-gray-900 text-center mb-4">¿Te interesa?</p>
-                                            <a id="detalle-auto-wpp-btn" href="#" target="_blank" class="flex items-center justify-center text-lg py-4 w-full px-5 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-green-500 text-white hover:bg-green-600 focus:ring-green-500">
+                                        <div class="bg-aj-gray-light p-6 rounded-lg shadow-sm sticky top-20">
+                                            <p class="font-bold text-lg text-aj-dark text-center mb-4">¿Te interesa?</p>
+                                            <!-- BOTÓN WPP (VERDE) CON PULSO -->
+                                            <a id="detalle-auto-wpp-btn" href="#" target="_blank" class="bg-green-500 text-white px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transform hover:-translate-y-0.5 w-full flex items-center justify-center text-lg btn-pulse-wpp">
                                                 <i data-lucide="message-circle" class="w-6 h-6 mr-2"></i>
                                                 Consultar por WhatsApp
                                             </a>
-                                            <p class="text-xs text-gray-600 text-center mt-4">Serás redirigido a WhatsApp para hablar con un vendedor.</p>
+                                            <p class="text-xs text-aj-text-light text-center mt-4">Serás redirigido a WhatsApp para hablar con un vendedor.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -366,93 +446,87 @@
                 </div>
             </div>
 
-            <!-- Página: Admin (CMS) - REWORKEADO MODERNO -->
-            <section id="page-admin" class="page-section hidden admin-gradient-bg py-16 sm:py-24" style="min-height: 80vh;">
+            <!-- Página: Admin (CMS) - (NUEVO ESTILO "FINO") -->
+            <section id="page-admin" class="page-section hidden bg-aj-gray-light py-16 sm:py-24" style="min-height: 80vh;">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     
-                    <!-- Contenedor de Login (Glassmorphism) -->
-                    <div id="admin-login-container" class="max-w-md mx-auto bg-gray-900/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-xl shadow-2xl p-8 md:p-10">
-                        <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo" class="w-48 mx-auto mb-6 rounded-lg">
-                        <h2 class="text-3xl font-bold text-white text-center mb-6">Acceso Admin</h2>
-                        <form id="admin-login-form" class="space-y-6">
+                    <!-- Contenedor de Login (Estilo Fino) -->
+                    <div id="admin-login-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-xl animate__animated animate__fadeInUp">
+                        <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo" class="w-48 mx-auto mb-6 rounded-md">
+                        <h2 class="text-2xl font-bold text-aj-dark text-center mb-6">Acceso Admin</h2>
+                        <form id="admin-login-form" class="space-y-4">
                             <div>
-                                <label for="login-user" class="block text-sm font-semibold text-gray-300 mb-1">Usuario</label>
-                                <input type="text" id="login-user" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" required>
+                                <label for="login-user" class="block text-sm font-semibold text-gray-700 mb-1">Usuario</label>
+                                <input type="text" id="login-user" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" required>
                             </div>
                             <div>
-                                <label for="login-pass" class="block text-sm font-semibold text-gray-300 mb-1">Contraseña</label>
-                                <input type="password" id="login-pass" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" required>
+                                <label for="login-pass" class="block text-sm font-semibold text-gray-700 mb-1">Contraseña</label>
+                                <input type="password" id="login-pass" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" required>
                             </div>
-                            <!-- "Recordarme" Agregado -->
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <input id="login-remember" type="checkbox" class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
-                                    <label for="login-remember" class="ml-2 block text-sm text-gray-300">Recordarme</label>
-                                </div>
-                            </div>
-                            <p id="login-error" class="text-red-400 text-sm font-semibold h-5"></p>
-                            <button type="submit" class="btn-primary w-full text-lg py-3 px-5 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600">
+                            <p id="login-error" class="text-red-600 text-sm font-semibold"></p>
+                            <!-- BOTÓN ROJO -->
+                            <button type="submit" class="bg-aj-brand text-white px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out hover:bg-aj-brand-dark focus:outline-none focus:ring-2 focus:ring-aj-brand focus:ring-offset-2 transform hover:-translate-y-0.5 w-full text-lg">
                                 Entrar
                             </button>
                         </form>
                     </div>
 
-                    <!-- Panel de Admin (Moderno 1 Columna) -->
-                    <div id="admin-panel" class="hidden max-w-3xl mx-auto">
+                    <!-- Panel de Admin (Estilo Fino) -->
+                    <div id="admin-panel" class="hidden">
                         <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-10 gap-4">
                             <div>
-                                <h2 class="text-4xl font-extrabold text-white">Panel de Administración</h2>
-                                <p class="text-gray-300 text-lg">Hola Juanito. Desde acá podés manejar tu página.</p>
+                                <h2 class="text-4xl font-extrabold text-aj-dark">Panel de Administración</h2>
+                                <p class="text-aj-text-light text-lg">Hola Juanito. Desde acá podés manejar tu página.</p>
                             </div>
-                            <button id="admin-logout-btn" class="btn-danger flex-shrink-0 px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-red-600 text-white hover:bg-red-700 focus:ring-red-600 w-full sm:w-auto">
+                            <!-- BOTÓN SALIR (OUTLINE) -->
+                            <button id="admin-logout-btn" class="border-2 border-aj-brand text-aj-brand px-5 py-3 rounded-lg font-semibold shadow-sm transition-all duration-300 ease-in-out hover:bg-aj-brand hover:text-white focus:outline-none focus:ring-2 focus:ring-aj-brand focus:ring-offset-2 inline-flex items-center justify-center sm:w-auto">
                                 <i data-lucide="log-out" class="w-5 h-5 mr-2 inline-block"></i>Salir
                             </button>
                         </div>
                         
-                        <!-- Grilla de Acciones (1 Columna) -->
-                        <div class="grid grid-cols-1 gap-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             
                             <!-- Col: Gestionar Autos -->
-                            <div class="admin-login-card bg-gray-900/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-xl shadow-2xl p-8 rounded-lg shadow-md">
-                                <h3 class="text-2xl font-bold text-white mb-6">Gestionar Vehículos</h3>
+                            <div class="bg-aj-white p-8 rounded-lg shadow-xl animate__animated animate__fadeInUp">
+                                <h3 class="text-2xl font-bold text-aj-dark mb-6">Gestionar Vehículos</h3>
                                 
-                                <button id="admin-add-car-btn" class="btn-primary w-full text-lg py-4 flex items-center justify-center mb-6 px-5 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600">
+                                <button id="admin-add-car-btn" class="bg-aj-brand text-white px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out hover:bg-aj-brand-dark focus:outline-none focus:ring-2 focus:ring-aj-brand focus:ring-offset-2 transform hover:-translate-y-0.5 w-full text-lg py-4 flex items-center justify-center mb-6">
                                     <i data-lucide="plus-circle" class="w-6 h-6 mr-2"></i>
-                                    + Agregar Auto Nuevo
+                                    Agregar Auto Nuevo
                                 </button>
 
-                                <h4 class="text-lg font-semibold text-white mb-3">Autos Publicados</h4>
-                                <div id="admin-car-list-loader" class="text-center py-8">
-                                    <p class="text-gray-400">Cargando autos...</p>
+                                <h4 class="text-lg font-semibold text-aj-dark mb-3">Autos Publicados</h4>
+                                <div id="admin-car-list-loader" class="text-center">
+                                    <p class="text-aj-text-light">Cargando autos...</p>
                                 </div>
                                 <div id="admin-car-list" class="space-y-3 max-h-96 overflow-y-auto pr-2">
                                     <!-- JS Rellena esto -->
                                 </div>
-                                <p id="admin-no-cars" class="hidden text-gray-400 text-center bg-gray-900/50 p-4 rounded-lg">No hay autos cargados. ¡Agregá el primero!</p>
+                                <p id="admin-no-cars" class="hidden text-aj-text-light text-center bg-aj-gray-light p-4 rounded-lg">No hay autos cargados. ¡Agregá el primero!</p>
                             </div>
 
                             <!-- Col: Info de Contacto -->
-                            <div class="admin-login-card bg-gray-900/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-xl shadow-2xl p-8 rounded-lg shadow-md">
-                                <h3 class="text-2xl font-bold text-white mb-6">Gestionar Info de Contacto</h3>
+                            <div class="bg-aj-white p-8 rounded-lg shadow-xl animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                                <h3 class="text-2xl font-bold text-aj-dark mb-6">Gestionar Info de Contacto</h3>
                                 <form id="admin-contact-form" class="space-y-4">
                                     <div>
-                                        <label for="contact-form-wpp" class="block text-sm font-semibold text-gray-300 mb-1">Número de WhatsApp (Ej: 54911...)</label>
-                                        <input type="text" id="contact-form-wpp" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="54911...">
+                                        <label for="contact-form-wpp" class="block text-sm font-semibold text-gray-700 mb-1">Número de WhatsApp (Ej: 54911...)</label>
+                                        <input type="text" id="contact-form-wpp" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="54911...">
                                     </div>
                                     <div>
-                                        <label for="contact-form-address" class="block text-sm font-semibold text-gray-300 mb-1">Dirección (Texto)</label>
-                                        <input type="text" id="contact-form-address" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="D Elia Maestro 4969, José C. Paz">
+                                        <label for="contact-form-address" class="block text-sm font-semibold text-gray-700 mb-1">Dirección (Texto)</label>
+                                        <input type="text" id="contact-form-address" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="D Elia Maestro 4969, José C. Paz">
                                     </div>
                                     <div>
-                                        <label for="contact-form-map-url" class="block text-sm font-semibold text-gray-300 mb-1">URL de Google Maps (Link "Compartir")</label>
-                                        <input type="url" id="contact-form-map-url" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="https://goo.gl/maps/...">
+                                        <label for="contact-form-map-url" class="block text-sm font-semibold text-gray-700 mb-1">URL de Google Maps (Link "Compartir")</label>
+                                        <input type="url" id="contact-form-map-url" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="https://goo.gl/maps/...">
                                     </div>
                                     <div>
-                                        <label for="contact-form-hours" class="block text-sm font-semibold text-gray-300 mb-1">Horarios (Texto)</label>
-                                        <input type="text" id="contact-form-hours" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="Lunes a Sábado: 9 a.m. – 7:15 p.m.">
+                                        <label for="contact-form-hours" class="block text-sm font-semibold text-gray-700 mb-1">Horarios (Texto)</label>
+                                        <input type="text" id="contact-form-hours" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="Lunes a Sábado: 9 a.m. – 7:15 p.m.">
                                     </div>
-                                    <button type="submit" id="admin-contact-submit-btn" class="btn-primary w-full text-lg py-4 px-5 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600">
-                                        Guardar Info de Contacto
+                                    <button type="submit" id="admin-contact-submit-btn" class="bg-aj-brand text-white px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out hover:bg-aj-brand-dark focus:outline-none focus:ring-2 focus:ring-aj-brand focus:ring-offset-2 transform hover:-translate-y-0.5 w-full text-lg py-4 inline-flex items-center justify-center">
+                                        <i data-lucide="save" class="w-5 h-5 mr-2"></i>Guardar Info de Contacto
                                     </button>
                                 </form>
                             </div>
@@ -464,1179 +538,1011 @@
 
         </main>
 
-        <!-- Footer -->
-        <footer class="bg-gray-900 text-gray-400">
+        <!-- Footer (Estilo Fino) -->
+        <footer class="bg-aj-white border-t border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
                     <div class="mb-4 md:mb-0">
                         <img src="https://i.postimg.cc/XqLD6P0p/wmremove-transformed-1.png" alt="Logo Automotores Juanito" class="w-48 h-auto mx-auto md:mx-0 rounded-md">
                     </div>
-                    <div class="flex space-x-6">
-                        <a href="#home" class="hover:text-white">Inicio</a>
-                        <a href="#catalogo-section" class="hover:text-white">Catálogo</a>
-                        <a href="#contacto-section" class="hover:text-white">Contacto</a>
-                        <a href="#admin" class="hover:text-white">Admin</a>
+                    <div class="flex space-x-6 text-aj-text-light font-semibold">
+                        <a href="#home" class="hover:text-aj-brand">Inicio</a>
+                        <a href="#catalogo-section" class="hover:text-aj-brand">Catálogo</a>
+                        <a href="#contacto-section" class="hover:text-aj-brand">Contacto</a>
+                        <a href="#admin" class="hover:text-aj-brand">Admin</a>
                     </div>
                 </div>
-                <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-500 text-sm">
-                    <p>&copy; <span id="current-year"></span> Automotores Juanito. Todos los derechos reservados.</p>
+                <div class="mt-8 pt-8 border-t border-gray-200 text-center text-gray-400 text-sm">
+                    <p>© <span id="current-year"></span> Automotores Juanito. Todos los derechos reservados.</p>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- Modales de Admin (Modernos) -->
+    <!-- Modales de Admin (Estilo Fino) -->
 
-    <!-- Modal: Formulario de Auto (Admin Dark) -->
-    <div id="car-form-modal" class="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm hidden items-start justify-center p-4 overflow-y-auto">
-        <div class="admin-login-card bg-gray-900/60 backdrop-blur-xl saturate-150 border border-white/10 w-full max-w-2xl rounded-lg shadow-2xl my-10 text-white">
+    <!-- Modal: Formulario de Auto (Admin) -->
+    <div id="car-form-modal" class="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm hidden items-start justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl my-10 animate__animated animate__fadeInUp" style="animation-duration: 0.5s;">
             <form id="car-form" class="p-6 md:p-8 space-y-6">
                 <div class="flex justify-between items-center">
-                    <h3 id="car-form-title" class="text-2xl font-bold"></h3>
-                    <button type="button" id="car-form-close-btn" class="text-gray-400 hover:text-white">
+                    <h3 id="car-form-title" class="text-2xl font-bold text-aj-dark"></h3>
+                    <button type="button" id="car-form-close-btn" class="text-gray-500 hover:text-aj-dark">
                         <i data-lucide="x" class="w-7 h-7"></i>
                     </button>
                 </div>
 
                 <input type="hidden" id="car-form-id">
 
-                <!-- Fotos (Con Preview Mejorado) -->
+                <!-- Fotos -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-1">Fotos del vehículo</label>
-                    <input type="file" id="car-form-fotos" multiple accept="image/*" class="block w-full text-sm text-gray-300
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fotos del vehículo</label>
+                    <input type="file" id="car-form-fotos" multiple accept="image/*" class="block w-full text-sm text-gray-500
                         file:mr-4 file:py-2 file:px-4
                         file:rounded-lg file:border-0
                         file:text-sm file:font-semibold
-                        file:bg-blue-600 file:text-white
-                        hover:file:bg-blue-700
+                        file:bg-red-50 file:text-aj-brand
+                        hover:file:bg-red-100
                     ">
-                    <p class="text-xs text-gray-400 mt-1">Podés subir varias a la vez. Se comprimirán automáticamente. La primera será la principal.</p>
-                    <div id="car-form-upload-progress" class="hidden w-full bg-gray-700 rounded-full h-2.5 mt-2">
-                        <div id="car-form-upload-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                    <p class="text-xs text-gray-500 mt-1">Podés subir varias a la vez. Se comprimirán automáticamente. La primera será la principal.</p>
+                    <div id="car-form-upload-progress" class="hidden w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                        <div id="car-form-upload-bar" class="bg-red-600 h-2.5 rounded-full" style="width: 0%"></div>
                     </div>
-                    <p id="car-form-upload-status" class="hidden text-sm text-blue-400 mt-1"></p>
+                    <p id="car-form-upload-status" class="hidden text-sm text-red-600 mt-1"></p>
                     <div id="car-form-image-previews" class="mt-4 flex flex-wrap gap-2">
-                        <!-- Previews de imágenes (Nuevas y Existentes) -->
+                        <!-- Previews -->
                     </div>
                 </div>
 
                 <!-- Grid de Datos -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                     <div>
-                        <label for="car-form-marca" class="block text-sm font-semibold text-gray-300 mb-1">Marca</label>
-                        <input type="text" id="car-form-marca" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" required>
+                        <label for="car-form-marca" class="block text-sm font-semibold text-gray-700 mb-1">Marca</label>
+                        <input type="text" id="car-form-marca" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" required>
                     </div>
                     <div>
-                        <label for="car-form-modelo" class="block text-sm font-semibold text-gray-300 mb-1">Modelo</label>
-                        <input type="text" id="car-form-modelo" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" required>
+                        <label for="car-form-modelo" class="block text-sm font-semibold text-gray-700 mb-1">Modelo</label>
+                        <input type="text" id="car-form-modelo" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" required>
                     </div>
                     <div>
-                        <label for="car-form-precio" class="block text-sm font-semibold text-gray-300 mb-1">Precio (Solo números)</label>
-                        <input type="number" id="car-form-precio" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="10000000" required>
+                        <label for="car-form-precio" class="block text-sm font-semibold text-gray-700 mb-1">Precio (Solo números)</label>
+                        <input type="number" id="car-form-precio" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="10000000" required>
                     </div>
                     <div>
-                        <label for="car-form-ano" class="block text-sm font-semibold text-gray-300 mb-1">Año</label>
-                        <input type="number" id="car-form-ano" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="2020" required>
+                        <label for="car-form-ano" class="block text-sm font-semibold text-gray-700 mb-1">Año</label>
+                        <input type="number" id="car-form-ano" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="2020" required>
                     </div>
                     <div class="md:col-span-2">
-                        <label for="car-form-km" class="block text-sm font-semibold text-gray-300 mb-1">Kilometraje (Solo números)</label>
-                        <input type="number" id="car-form-km" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="50000" required>
+                        <label for="car-form-km" class="block text-sm font-semibold text-gray-700 mb-1">Kilometraje (Solo números)</label>
+                        <input type="number" id="car-form-km" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="50000" required>
                     </div>
                 </div>
                 
                 <!-- Descripción -->
                 <div>
-                    <label for="car-form-descripcion" class="block text-sm font-semibold text-gray-300 mb-1">Descripción</label>
-                    <textarea id="car-form-descripcion" rows="4" class="input-text-admin block w-full px-4 py-3 rounded-lg text-lg shadow-inner bg-gray-900/50 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400" placeholder="Ej: Único dueño, VTV al día, listo para transferir..."></textarea>
+                    <label for="car-form-descripcion" class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
+                    <textarea id="car-form-descripcion" rows="4" class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-aj-brand focus:border-transparent" placeholder="Ej: Único dueño, VTV al día, listo para transferir..."></textarea>
                 </div>
 
                 <!-- Status (Vendido) -->
                 <div class="flex items-center">
-                    <input id="car-form-vendido" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-600 rounded focus:ring-blue-500 bg-gray-900/50">
-                    <label for="car-form-vendido" class="ml-2 block text-lg font-medium">Marcar como "Vendido"</label>
+                    <input id="car-form-vendido" type="checkbox" class="h-5 w-5 text-aj-brand border-gray-300 rounded focus:ring-aj-brand">
+                    <label for="car-form-vendido" class="ml-2 block text-lg font-medium text-gray-900">Marcar como "Vendido"</label>
                 </div>
 
                 <!-- Botones -->
                 <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4">
-                    <button type="button" id="car-form-cancel-btn" class="btn-secondary px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-gray-700 text-white hover:bg-gray-600 focus:ring-gray-500 w-full sm:w-auto mt-2 sm:mt-0">
-                        Cancelar
+                    <button type="button" id="car-form-cancel-btn" class="bg-gray-200 text-gray-800 px-5 py-3 rounded-lg font-semibold shadow-sm transition-all duration-300 ease-in-out hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 w-full sm:w-auto mt-2 sm:mt-0 inline-flex items-center justify-center">
+                        <i data-lucide="x" class="w-5 h-5 mr-2 -ml-1"></i>Cancelar
                     </button>
-                    <button type="submit" id="car-form-submit-btn" class="btn-primary px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600 w-full sm:w-auto">
-                        Guardar Vehículo
+                    <button type="submit" id="car-form-submit-btn" class="bg-aj-brand text-white px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out hover:bg-aj-brand-dark focus:outline-none focus:ring-2 focus:ring-aj-brand focus:ring-offset-2 transform hover:-translate-y-0.5 w-full sm:w-auto inline-flex items-center justify-center">
+                        <i data-lucide="check" class="w-5 h-5 mr-2 -ml-1"></i>Guardar Vehículo
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal: Confirmar Eliminar (Admin Dark) -->
-    <div id="delete-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="admin-login-card bg-gray-900/60 backdrop-blur-xl saturate-150 border border-white/10 w-full max-w-sm rounded-lg shadow-2xl p-8 text-center">
+    <!-- Modal: Confirmar Eliminar (Admin) -->
+    <div id="delete-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-lg shadow-2xl p-8 text-center animate__animated animate__fadeInUp" style="animation-duration: 0.5s;">
             <i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mx-auto mb-4"></i>
-            <h3 class="text-2xl font-bold text-white mb-2">¿Estás seguro?</h3>
-            <p class="text-gray-300 mb-6">Esta acción no se puede deshacer. El vehículo se eliminará permanentemente.</p>
+            <h3 class="text-2xl font-bold text-aj-dark mb-2">¿Estás seguro?</h3>
+            <p class="text-aj-text-light mb-6">Esta acción no se puede deshacer. El vehículo se eliminará permanentemente.</p>
             <div class="flex flex-col-reverse sm:flex-row sm:justify-center sm:space-x-4">
-                <button id="delete-modal-cancel-btn" class="btn-secondary px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-gray-700 text-white hover:bg-gray-600 focus:ring-gray-500 w-full sm:w-auto mt-2 sm:mt-0">
-                    Cancelar
+                <button id="delete-modal-cancel-btn" class="bg-gray-200 text-gray-800 px-5 py-3 rounded-lg font-semibold shadow-sm transition-all duration-300 ease-in-out hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 w-full sm:w-auto mt-2 sm:mt-0 inline-flex items-center justify-center">
+                    <i data-lucide="x" class="w-5 h-5 mr-2 -ml-1"></i>Cancelar
                 </button>
-                <button id="delete-modal-confirm-btn" class="btn-danger px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed bg-red-600 text-white hover:bg-red-700 focus:ring-red-600 w-full sm:w-auto">
-                    Sí, eliminar
+                <button id="delete-modal-confirm-btn" class="bg-aj-brand text-white px-5 py-3 rounded-lg font-semibold shadow-md transition-all duration-300 ease-in-out hover:bg-aj-brand-dark focus:outline-none focus:ring-2 focus:ring-aj-brand focus:ring-offset-2 w-full sm:w-auto inline-flex items-center justify-center">
+                    <i data-lucide="trash-2" class="w-5 h-5 mr-2 -ml-1"></i>Sí, eliminar
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Toast: Notificación (Oscuro) -->
-    <div id="notification-toast" class="fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-5 py-3 rounded-lg shadow-xl translate-x-[200%] transition-transform duration-300 ease-out">
+    <!-- Toast: Notificación (Estilo Fino) -->
+    <div id="notification-toast" class="fixed bottom-5 right-5 z-50 bg-aj-dark text-aj-white px-5 py-3 rounded-lg shadow-xl translate-x-[200%] transition-transform duration-300 ease-out">
         <p id="notification-message"></p>
     </div>
 
-    <!-- Firebase SDKs y Lógica Principal -->
+
+    <!-- Firebase SDKs -->
     <script type="module">
-        // Importar servicios de Firebase (AHORA EN EL TOP-LEVEL)
+        // (NUEVO) Importar Lucide como un módulo
+        import * as lucide from 'https://cdn.jsdelivr.net/npm/lucide@latest/dist/lucide.esm.js';
+
+        // Importar servicios de Firebase (v12.5.0)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
         import { 
-            getFirestore, 
-            doc, 
-            getDoc, 
-            setDoc, 
-            addDoc, 
-            updateDoc, 
-            deleteDoc, 
-            onSnapshot, 
-            collection, 
-            query, 
-            where, 
-            serverTimestamp,
-            setLogLevel
+            getFirestore, doc, getDoc, setDoc, addDoc, updateDoc, 
+            deleteDoc, onSnapshot, collection, query, serverTimestamp, setLogLevel
         } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-        // --- LA SOLUCIÓN: Esperar al evento 'load' ---
-        // 'load' se dispara después de que TODOS los recursos (scripts, css, imágenes) se han cargado.
-        // Esto previene los errores 'ReferenceError'
-document.addEventListener('DOMContentLoaded', () => {
+        // --- Configuración Global ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAPMJC9VUgDS8ZhETDP1ix1_xie0r5l9iU",
+            authDomain: "juanitosautomotores.firebaseapp.com",
+            projectId: "juanitosautomotores",
+            storageBucket: "juanitosautomotores.firebasestorage.app",
+            messagingSenderId: "796050118269",
+            appId: "1:796050118269:web:e6d7a85c579b5a68298314",
+            measurementId: "G-8L0481YL3F"
+          };
+          
+        const appId = firebaseConfig.projectId; 
         
-            // Acceder a Motion.dev y Lucide (AHORA ES SEGURO)
-const { animate, scroll, inView } = window.motion;
+        let app, db, analytics;
+        let currentCarIdToDelete = null;
+        let currentCarToEdit = null;
+        let cachedCarData = [];
+        let isAdminLoggedIn = false;
+        
+        const PUBLIC_DATA_PATH = `artifacts/${appId}/public/data`;
+        let carCollection;
+        let siteConfigDoc;
 
-            // --- Configuración Global ---
-            
-            // Configuración de Firebase
-            const firebaseConfig = {
-                apiKey: "AIzaSyAPMJC9VUgDS8ZhETDP1ix1_xie0r5l9iU",
-                authDomain: "juanitosautomotores.firebaseapp.com",
-                projectId: "juanitosautomotores",
-                storageBucket: "juanitosautomotores.firebasestorage.app",
-                messagingSenderId: "796050118269",
-                appId: "1:796050118269:web:e6d7a85c579b5a68298314",
-                measurementId: "G-8L0481YL3F"
-              };
-              
-            const appId = firebaseConfig.projectId; 
-            
-            // Inicializar Firebase
-            let app, db, analytics;
-            let currentCarIdToDelete = null;
-            let currentCarToEdit = null;
-            let cachedCarData = [];
-            let newCarImageFiles = []; // Caché para nuevos archivos de imagen
+        // --- Inicialización de la App ---
+        function initializeMainApp() {
+            try {
+                app = initializeApp(firebaseConfig);
+                analytics = getAnalytics(app);
+                db = getFirestore(app);
+                setLogLevel('Debug');
 
-            let isAdminLoggedIn = false;
-            
-            const PUBLIC_DATA_PATH = `artifacts/${appId}/public/data`;
-            let carCollection;
-            let siteConfigDoc;
+                carCollection = collection(db, `${PUBLIC_DATA_PATH}/cars`);
+                siteConfigDoc = doc(db, `${PUBLIC_DATA_PATH}/siteConfig/contact`);
 
-            // --- Inicialización de la App ---
+                loadInitialData();
+                setupEventListeners();
+                setupScrollAnimations(); // Configurar observer de scroll
+                lucide.createIcons(); // <--- AHORA SÍ lucide está definido
+                document.getElementById('current-year').textContent = new Date().getFullYear();
 
-            function initializeMainApp() {
-                try {
-                    app = initializeApp(firebaseConfig);
-                    analytics = getAnalytics(app);
-                    db = getFirestore(app);
-                    setLogLevel('Debug');
-
-                    carCollection = collection(db, `${PUBLIC_DATA_PATH}/cars`);
-                    siteConfigDoc = doc(db, `${PUBLIC_DATA_PATH}/siteConfig/contact`);
-                    
-                    loadInitialData();
-                    setupEventListeners();
-                    setupAnimations();
-window.lucide.createIcons(); // AHORA SÍ lucide está definido
-
-                    document.getElementById('current-year').textContent = new Date().getFullYear();
-
-                } catch (error) {
-                    console.error("Error al inicializar Firebase:", error);
-                    document.getElementById('app-loader-text').textContent = 'Error al conectar. Intenta recargar la página.';
-                    document.getElementById('app-loader-text').classList.add('text-red-500');
-                }
+            } catch (error) {
+                console.error("Error al inicializar Firebase:", error);
+                document.getElementById('app-loader-text').textContent = 'Error al conectar. Intenta recargar la página.';
+                document.getElementById('app-loader-text').classList.add('text-red-500');
             }
-            
-            // --- Lógica de Ruteo ---
+        }
 
-            function handleRouting() {
-                const hash = window.location.hash || '#home';
-                
-                document.querySelectorAll('.page-section').forEach(page => {
-                    page.classList.add('hidden');
-                });
-                
-                if (hash === '#admin') {
-                    const adminPage = document.getElementById('page-admin');
-                    adminPage.classList.remove('hidden');
-                    document.body.classList.add('admin-gradient-bg'); // Fondo degradado para admin
-                    document.body.classList.remove('bg-gray-50');
-                    showAdminPanel(isAdminLoggedIn);
-                } else {
-                    const homePage = document.getElementById('page-home');
-                    homePage.classList.remove('hidden');
-                    document.body.classList.remove('admin-gradient-bg');
-                    document.body.classList.add('bg-gray-50');
-                    
-                    if (hash !== '#home' && hash.includes('-section')) {
-                        const targetElement = document.getElementById(hash.substring(1));
-                        if (targetElement) {
-                            const headerOffset = 80; // altura del header
-                            const elementPosition = targetElement.getBoundingClientRect().top;
-                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                            
-                            window.scrollTo({
-                                 top: offsetPosition,
-                                 behavior: "smooth"
-                            });
-                        }
-                    } else if (hash === '#home') {
-                         window.scrollTo({ top: 0, behavior: "smooth" });
-                    }
-                }
-                
-                document.getElementById('mobile-menu').classList.add('hidden');
-                updateNavActiveState(hash);
-            }
+        // --- Lógica de Ruteo y Navegación ---
+        function handleRouting() {
+            const hash = window.location.hash || '#home';
             
-            function updateNavActiveState(hash) {
-                 let activeHash = '#home';
-                 if (hash.startsWith('#ultimos')) activeHash = '#ultimos-ingresos-section';
-                 else if (hash.startsWith('#catalogo')) activeHash = '#catalogo-section';
-                 else if (hash.startsWith('#contacto')) activeHash = '#contacto-section';
-                 else if (hash.startsWith('#admin')) activeHash = '#admin';
-                 
-                 document.querySelectorAll('.nav-link').forEach(link => {
-                     link.classList.toggle('is-active', link.getAttribute('href') === activeHash);
-                     link.classList.toggle('font-semibold', link.getAttribute('href') === activeHash);
-                 });
-                 document.querySelectorAll('.nav-link-mobile').forEach(link => {
-                     link.classList.toggle('is-active', link.getAttribute('href') === activeHash);
-                     link.classList.toggle('bg-blue-600', link.getAttribute('href') === activeHash);
-                     link.classList.toggle('text-white', link.getAttribute('href') === activeHash);
-                     link.classList.toggle('hover:bg-gray-100', link.getAttribute('href') !== activeHash);
-                     link.classList.toggle('text-gray-700', link.getAttribute('href') !== activeHash);
-                 });
-            }
-
-            function showAdminPanel(isAuthed) {
-                const loginContainer = document.getElementById('admin-login-container');
-                const adminPanel = document.getElementById('admin-panel');
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            if (hash === '#admin') {
+                const adminPage = document.getElementById('page-admin');
+                adminPage.classList.remove('hidden');
+                showAdminPanel(isAdminLoggedIn);
+            } else {
+                const homePage = document.getElementById('page-home');
+                homePage.classList.remove('hidden');
                 
-                if (isAuthed) {
-                    loginContainer.classList.add('hidden');
-                    adminPanel.classList.remove('hidden');
-                    loadContactDataForAdmin();
-                } else {
-                    loginContainer.classList.remove('hidden');
-                    adminPanel.classList.add('hidden');
-                    document.getElementById('admin-login-form').reset();
-                    document.getElementById('login-error').textContent = '';
-                    
-                    // Cargar datos guardados de "Recordarme"
-                    const savedUser = localStorage.getItem('adminUser_aj');
-                    const savedPass = localStorage.getItem('adminPass_aj');
-                    if (savedUser) {
-                        document.getElementById('login-user').value = savedUser;
-                        document.getElementById('login-pass').value = savedPass;
-                        document.getElementById('login-remember').checked = true;
+                if (hash !== '#home') {
+                    let targetId = hash.substring(1);
+                    // Normalizar hashes
+                    if (targetId === 'catalogo') targetId = 'catalogo-section';
+                    if (targetId === 'contacto') targetId = 'contacto-section';
+                    if (targetId === 'destacados') targetId = 'ultimos-ingresos-section';
+
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 }
             }
             
-            // --- Lógica de Login (Hardcodeada) ---
-            
-            function handleAdminLogin(e) {
-                e.preventDefault();
-                const user = document.getElementById('login-user').value;
-                const pass = document.getElementById('login-pass').value;
-                const remember = document.getElementById('login-remember').checked;
-                const errorEl = document.getElementById('login-error');
-                
-                if (user === 'juanmng2025' && pass === 'automotoresjuanitos2025jcp') {
-                    isAdminLoggedIn = true;
-                    
-                    if (remember) {
-                        localStorage.setItem('adminUser_aj', user);
-                        localStorage.setItem('adminPass_aj', pass);
+            // Manejar manualmente el link de Admin
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const linkHash = link.getAttribute('href');
+                if (linkHash === '#admin') {
+                    if (hash === '#admin') {
+                        link.classList.add('border-aj-brand', 'text-aj-dark', 'border-l-4');
+                        link.classList.remove('border-transparent', 'text-aj-text-light');
                     } else {
-                        localStorage.removeItem('adminUser_aj');
-                        localStorage.removeItem('adminPass_aj');
+                        link.classList.remove('border-aj-brand', 'text-aj-dark', 'border-l-4');
+                        link.classList.add('border-transparent', 'text-aj-text-light');
                     }
-                    
-                    showAdminPanel(true);
-                    showNotification('¡Bienvenido, Juanito!');
-                } else {
-                    isAdminLoggedIn = false;
-                    errorEl.textContent = 'Usuario o contraseña incorrectos.';
-                    const loginContainer = document.getElementById('admin-login-container');
-                    loginContainer.classList.add('animate-shake');
-                    setTimeout(() => loginContainer.classList.remove('animate-shake'), 500);
                 }
-            }
+            });
+
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function showAdminPanel(isAuthed) {
+            const loginContainer = document.getElementById('admin-login-container');
+            const adminPanel = document.getElementById('admin-panel');
             
-            function handleAdminLogout() {
+            if (isAuthed) {
+                loginContainer.classList.add('hidden');
+                adminPanel.classList.remove('hidden');
+                loadContactDataForAdmin();
+            } else {
+                loginContainer.classList.remove('hidden');
+                adminPanel.classList.add('hidden');
+                document.getElementById('admin-login-form').reset();
+                document.getElementById('login-error').textContent = '';
+            }
+        }
+        
+        // --- Lógica de Login ---
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+            const errorEl = document.getElementById('login-error');
+            
+            if (user === 'juanmng2025' && pass === 'automotoresjuanitos2025jcp') {
+                isAdminLoggedIn = true;
+                showAdminPanel(true);
+                showNotification('¡Bienvenido, Juanito!');
+            } else {
                 isAdminLoggedIn = false;
-                window.location.hash = '#home'; // Volver al home
-                showNotification('Has cerrado sesión');
+                errorEl.textContent = 'Usuario o contraseña incorrectos.';
+                const loginContainer = document.getElementById('admin-login-container');
+                loginContainer.classList.add('animate__animated', 'animate__shakeX');
+                setTimeout(() => loginContainer.classList.remove('animate__animated', 'animate__shakeX'), 1000);
+            }
+        }
+        
+        function handleAdminLogout() {
+            isAdminLoggedIn = false;
+            showAdminPanel(false);
+            showNotification('Has cerrado sesión');
+        }
+        
+        // --- Carga de Datos (Firestore) ---
+        function loadInitialData() {
+            if (!db || !carCollection || !siteConfigDoc) {
+                console.error("Firestore no está inicializado.");
+                return;
+            }
+
+            // 1. Listener para autos
+            try {
+                const q = query(collection(db, `${PUBLIC_DATA_PATH}/cars`));
+                onSnapshot(q, (snapshot) => {
+                    const cars = [];
+                    snapshot.forEach(doc => {
+                        cars.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    cars.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                    cachedCarData = cars;
+                    
+                    renderDestacados();
+                    renderCatalogo();
+                    renderAdminCarList();
+                    populateMarcaFilter();
+                    lucide.createIcons();
+                    
+                }, (error) => {
+                    console.error("Error en listener de autos:", error);
+                    document.getElementById('home-destacados-loader').innerHTML = '<p class="text-red-500">Error al cargar autos</p>';
+                    document.getElementById('catalogo-loader').innerHTML = '<p class="text-red-500">Error al cargar autos</p>';
+                    document.getElementById('admin-car-list-loader').innerHTML = '<p class="text-red-500">Error al cargar autos</p>';
+                });
+
+            } catch (error) {
+                console.error("Error configurando listener de autos:", error);
+            }
+
+            // 2. Listener para info de contacto
+            try {
+                onSnapshot(doc(db, `${PUBLIC_DATA_PATH}/siteConfig/contact`), (doc) => {
+                    renderContactInfo(doc.exists() ? doc.data() : {});
+                }, (error) => {
+                    console.error("Error en listener de contacto:", error);
+                    renderContactInfo({});
+                });
+
+            } catch (error) {
+                console.error("Error configurando listener de contacto:", error);
             }
             
-            // --- Carga de Datos (Firestore) ---
+            document.getElementById('app-loader').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+            document.getElementById('app-content').classList.add('flex', 'flex-col');
+        }
+        
+        async function loadContactDataForAdmin() {
+             try {
+                const docSnap = await getDoc(siteConfigDoc);
+                fillContactForm(docSnap.exists() ? docSnap.data() : {});
+             } catch (error) {
+                console.error("Error al cargar datos de contacto para admin:", error);
+             }
+        }
+        
+        // --- Lógica de Renderizado (Público) ---
+        function renderDestacados() {
+            const grid = document.getElementById('home-destacados-grid');
+            const loader = document.getElementById('home-destacados-loader');
+            
+            const autosVisibles = cachedCarData.filter(car => !car.status?.vendido);
+            const destacados = autosVisibles.slice(0, 3);
+            
+            grid.innerHTML = '';
+            
+            if (destacados.length > 0) {
+                destacados.forEach((car, index) => {
+                    grid.appendChild(createCarCard(car, index * 100)); // Añadir delay para animación
+                });
+                loader.classList.add('hidden');
+            } else {
+                loader.innerHTML = '<p class="text-aj-text-light">No hay autos destacados por el momento.</p>';
+                loader.classList.remove('hidden');
+            }
+        }
 
-            function loadInitialData() {
-                if (!db || !carCollection || !siteConfigDoc) {
-                    console.error("Firestore no está inicializado.");
-                    return;
+        function renderCatalogo() {
+            const grid = document.getElementById('catalogo-grid');
+            const loader = document.getElementById('catalogo-loader');
+            const noResults = document.getElementById('catalogo-no-results');
+            
+            const filteredCars = getFilteredCars();
+            
+            grid.innerHTML = '';
+            
+            if (filteredCars.length > 0) {
+                filteredCars.forEach((car, index) => {
+                    grid.appendChild(createCarCard(car, index * 50)); // Delay más corto para el catálogo
+                });
+                loader.classList.add('hidden');
+                noResults.classList.add('hidden');
+            } else {
+                loader.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            }
+        }
+
+        function createCarCard(car, delay = 0) {
+            const card = document.createElement('div');
+            // NUEVO ESTILO DE CARD "FINO"
+            card.className = 'bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:-translate-y-1.5 animate-on-scroll'; 
+            card.style.animationDelay = `${delay}ms`; // Delay para animación escalonada
+            card.setAttribute('data-id', car.id);
+            card.onclick = () => showDetalleAutoModal(car.id);
+
+            const imageUrl = car.imageUrls && car.imageUrls.length > 0 
+                ? car.imageUrls[0] 
+                : 'https://placehold.co/600x400/EAEAEA/999999?text=Sin+Foto';
+
+            const precioFormateado = car.precio 
+                ? `$${new Intl.NumberFormat('es-AR').format(car.precio)}`
+                : 'Consultar Precio';
+
+            card.innerHTML = `
+                <div class="relative overflow-hidden">
+                    <img src="${imageUrl}" alt="${car.marca} ${car.modelo}" class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-aj-dark truncate">${car.marca} ${car.modelo}</h3>
+                    <p class="text-2xl font-extrabold text-aj-brand mt-1 mb-3">${precioFormateado}</p>
+                    <div class="flex justify-between text-sm text-aj-text-light border-t border-aj-gray-light pt-3">
+                        <span class="font-semibold">${car.ano || 'N/A'}</span>
+                        <span class="font-semibold">${(car.km ? new Intl.NumberFormat('es-AR').format(car.km) : '0')} km</span>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function populateMarcaFilter() {
+            const select = document.getElementById('filter-marca');
+            const marcas = [...new Set(cachedCarData.map(car => car.marca))];
+            marcas.sort();
+            
+            while (select.options.length > 1) { select.remove(1); }
+            
+            marcas.forEach(marca => {
+                if(marca) {
+                    const option = document.createElement('option');
+                    option.value = marca;
+                    option.textContent = marca;
+                    select.appendChild(option);
                 }
+            });
+        }
 
-                // 1. Listener para autos
-                try {
-                    const q = query(collection(db, `${PUBLIC_DATA_PATH}/cars`));
-                    onSnapshot(q, (snapshot) => {
-                        const cars = [];
-                        snapshot.forEach(doc => {
-                            cars.push({ id: doc.id, ...doc.data() });
-                        });
-                        
-                        cars.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                        cachedCarData = cars;
-                        
-                        renderDestacados();
-                        renderCatalogo();
-                        renderAdminCarList();
-                        populateMarcaFilter();
-                        
-                    }, (error) => {
-                        console.error("Error al escuchar cambios en autos:", error);
-                        document.getElementById('home-destacados-loader').innerHTML = '<p class="text-red-500">Error al cargar autos</p>';
-                        document.getElementById('catalogo-loader').innerHTML = '<p class="text-red-500">Error al cargar autos</p>';
-                        document.getElementById('admin-car-list-loader').innerHTML = '<p class="text-red-500">Error al cargar autos</p>';
-                    });
+        function getFilteredCars() {
+            const marca = document.getElementById('filter-marca').value;
+            const precio = Number(document.getElementById('filter-precio').value);
+            const ano = Number(document.getElementById('filter-ano').value);
+            const sort = document.getElementById('filter-sort').value;
+            
+            let filtered = cachedCarData.filter(car => !car.status?.vendido);
 
-                } catch (error) {
-                    console.error("Error configurando listener de autos:", error);
-                }
-
-                // 2. Listener para info de contacto
-                try {
-                    onSnapshot(doc(db, `${PUBLIC_DATA_PATH}/siteConfig/contact`), (doc) => {
-                        if (doc.exists()) {
-                            renderContactInfo(doc.data());
-                        } else {
-                            renderContactInfo({}); // Renderizar defaults
-                        }
-                    }, (error) => {
-                        console.error("Error al escuchar cambios de contacto:", error);
-                        renderContactInfo({}); // Renderizar defaults si falla
-                    });
-
-                } catch (error) {
-                    console.error("Error configurando listener de contacto:", error);
-                }
-                
-                // Ocultar loader de app
-                setTimeout(() => {
-                    animate("#app-loader", { opacity: 0 }, { duration: 0.5 }).finished.then(() => {
-                        document.getElementById('app-loader').classList.add('hidden');
-                        document.getElementById('app-content').classList.remove('hidden');
-                        document.getElementById('app-content').classList.add('flex', 'flex-col');
-                        handleRouting(); // Manejar ruta inicial DESPUÉS de cargar datos
-                    });
-                }, 500); // Darle un respiro
+            if (marca) { filtered = filtered.filter(car => car.marca === marca); }
+            if (precio) { filtered = filtered.filter(car => car.precio <= precio); }
+            if (ano) { filtered = filtered.filter(car => car.ano >= ano); }
+            
+            switch (sort) {
+                case 'precio-asc': filtered.sort((a, b) => (a.precio || 0) - (b.precio || 0)); break;
+                case 'precio-desc': filtered.sort((a, b) => (b.precio || 0) - (a.precio || 0)); break;
+                case 'recientes': default: break;
             }
             
-            async function loadContactDataForAdmin() {
+            return filtered;
+        }
+
+        function renderContactInfo(data) {
+            const defaults = {
+                wpp: '5491112345678',
+                address: 'D Elia Maestro 4969, José C. Paz, Provincia de Buenos Aires',
+                mapUrl: 'https://www.google.com/maps?q=D+Elia+Maestro+4969,+Jos%C3%A9+C.+Paz',
+                hours: 'Lunes a Sábado: 9 a.m. – 7:15 p.m. (flexible)'
+            };
+
+            const wpp = data.wpp || defaults.wpp;
+            const address = data.address || defaults.address;
+            const mapUrl = data.mapUrl || defaults.mapUrl;
+            const hours = data.hours || defaults.hours;
+
+            document.getElementById('contact-wpp-link').href = `https://api.whatsapp.com/send?phone=${wpp.replace(/\D/g, '')}`;
+            document.getElementById('contact-map-link').href = mapUrl;
+            
+            document.getElementById('contact-wpp-text').textContent = wpp;
+            document.getElementById('contact-map-text').textContent = address;
+            document.getElementById('contact-hours-text').textContent = hours;
+            
+            const iframe = document.getElementById('contact-map-iframe');
+            if (data.mapUrl && data.mapUrl.includes('google.com/maps')) {
                  try {
-                    const docSnap = await getDoc(siteConfigDoc);
-                    if (docSnap.exists()) {
-                        fillContactForm(docSnap.data());
+                    const url = new URL(data.mapUrl);
+                    if (url.pathname.includes('/place/')) {
+                         iframe.src = `https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey.split('AIza')[1]}&q=${encodeURIComponent(address)}`;
+                    } else if (url.searchParams.get('pb')) {
+                         iframe.src = data.mapUrl.replace('/maps?', '/maps/embed?');
                     } else {
-                        fillContactForm({});
+                         iframe.src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3287.619089201919!2d-58.70588102377481!3d-34.51261175373656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcbd0643b17c75%3A0x633d07d4e46358c!2sD'El%C3%ADa%2C+Maestro+4969%2C+B1665+Jos%C3%A9+C.+Paz%2C+Provincia+de+Buenos+Aires!5e0!3m2!1ses-419!2sar!4v1731037415442!5m2!1ses-419!2sar`;
                     }
-                 } catch (error) {
-                    console.error("Error al cargar datos de contacto para admin:", error);
+                 } catch (e) {
+                      iframe.src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3287.619089201919!2d-58.70588102377481!3d-34.51261175373656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcbd0643b17c75%3A0x633d07d4e46358c!2sD'El%C3%ADa%2C+Maestro+4969%2C+B1665+Jos%C3%A9+C.+Paz%2C+Provincia+de+Buenos+Aires!5e0!3m2!1ses-419!2sar!4v1731037415442!5m2!1ses-419!2sar`;
                  }
             }
+        }
+        
+        async function showDetalleAutoModal(carId) {
+            const modal = document.getElementById('detalle-auto-modal');
+            const loader = document.getElementById('detalle-auto-loader');
+            const body = document.getElementById('detalle-auto-body');
             
-            // --- Lógica de Renderizado (Público) ---
-
-            function renderDestacados() {
-                const grid = document.getElementById('home-destacados-grid');
-                const loader = document.getElementById('home-destacados-loader');
-                
-                const autosVisibles = cachedCarData.filter(car => !car.status?.vendido);
-                const destacados = autosVisibles.slice(0, 3);
-                
-                grid.innerHTML = '';
-                
-                if (destacados.length > 0) {
-                    destacados.forEach(car => {
-                        grid.appendChild(createCarCard(car));
-                    });
-                    loader.classList.add('hidden');
-                    animateCardsIn(grid.children);
-                } else {
-                    loader.innerHTML = '<p class="text-gray-600">No hay autos destacados por el momento.</p>';
-                    loader.classList.remove('hidden');
-                }
-            }
-
-            function renderCatalogo() {
-                const grid = document.getElementById('catalogo-grid');
-                const loader = document.getElementById('catalogo-loader');
-                const noResults = document.getElementById('catalogo-no-results');
-                
-                const filteredCars = getFilteredCars();
-                
-                grid.innerHTML = '';
-                
-                if (filteredCars.length > 0) {
-                    filteredCars.forEach(car => {
-                        grid.appendChild(createCarCard(car));
-                    });
-                    loader.classList.add('hidden');
-                    noResults.classList.add('hidden');
-                    animateCardsIn(grid.children);
-                } else {
-                    loader.classList.add('hidden');
-                    noResults.classList.remove('hidden');
-                }
-            }
-
-            function createCarCard(car) {
-                const card = document.createElement('div');
-                // Clases de Tailwind reemplazando a .car-card
-                card.className = 'car-card bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:-translate-y-1.5 opacity-0';
-                card.setAttribute('data-id', car.id);
-                card.onclick = () => showDetalleAutoModal(car.id);
-
-                const imageUrl = car.imageUrls && car.imageUrls.length > 0 
-                    ? car.imageUrls[0] 
-                    : 'https://placehold.co/600x400/e2e8f0/94a3b8?text=Sin+Foto';
-
-                const precioFormateado = car.precio 
-                    ? `$${new Intl.NumberFormat('es-AR').format(car.precio)}`
-                    : 'Consultar Precio';
-
-                card.innerHTML = `
-                    <div class="relative overflow-hidden">
-                        <img src="${imageUrl}" alt="${car.marca} ${car.modelo}" class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105">
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 truncate">${car.marca} ${car.modelo}</h3>
-                        <p class="text-2xl font-extrabold text-blue-600 mt-1 mb-3">${precioFormateado}</p>
-                        <div class="flex justify-between text-sm text-gray-600 border-t border-gray-200 pt-3">
-                            <span class="font-semibold flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4 text-gray-500"></i> ${car.ano || 'N/A'}</span>
-                            <span class="font-semibold flex items-center gap-1"><i data-lucide="gauge" class="w-4 h-4 text-gray-500"></i> ${(car.km ? new Intl.NumberFormat('es-AR').format(car.km) : '0')} km</span>
-                        </div>
-                    </div>
-                `;
-                // Re-renderizar íconos de Lucide dentro de la card
-                setTimeout(() => window.lucide.createIcons(), 0);
-                return card;
-            }
-
-            function populateMarcaFilter() {
-                const select = document.getElementById('filter-marca');
-                const marcas = [...new Set(cachedCarData.map(car => car.marca))];
-                marcas.sort();
-                
-                while (select.options.length > 1) { select.remove(1); }
-                
-                marcas.forEach(marca => {
-                    if(marca) {
-                        const option = document.createElement('option');
-                        option.value = marca;
-                        option.textContent = marca;
-                        select.appendChild(option);
-                    }
-                });
-            }
-
-            function getFilteredCars() {
-                const marca = document.getElementById('filter-marca').value;
-                const precio = Number(document.getElementById('filter-precio').value);
-                const ano = Number(document.getElementById('filter-ano').value);
-                const sort = document.getElementById('filter-sort').value;
-                
-                let filtered = cachedCarData.filter(car => !car.status?.vendido);
-
-                if (marca) { filtered = filtered.filter(car => car.marca === marca); }
-                if (precio) { filtered = filtered.filter(car => car.precio <= precio); }
-                if (ano) { filtered = filtered.filter(car => car.ano >= ano); }
-                
-                switch (sort) {
-                    case 'precio-asc': filtered.sort((a, b) => a.precio - b.precio); break;
-                    case 'precio-desc': filtered.sort((a, b) => b.precio - b.precio); break;
-                    case 'recientes': default: break;
-                }
-                
-                return filtered;
-            }
-
-            function renderContactInfo(data) {
-                const defaults = {
-                    wpp: '5491112345678', 
-                    address: 'D Elia Maestro 4969, José C. Paz, Provincia de Buenos Aires',
-                    mapUrl: 'https://www.google.com/maps?q=D+Elia+Maestro+4969,+Jos%C3%A9+C.+Paz',
-                    hours: 'Lunes a Sábado: 9 a.m. – 7:15 p.m.'
-                };
-
-                const wpp = data.wpp || defaults.wpp;
-                const address = data.address || defaults.address;
-                const mapUrl = data.mapUrl || defaults.mapUrl;
-                const hours = data.hours || defaults.hours;
-
-                document.getElementById('contact-wpp-link').href = `https://api.whatsapp.com/send?phone=${wpp.replace(/\D/g, '')}`;
-                document.getElementById('contact-map-link').href = mapUrl;
-                
-                document.getElementById('contact-wpp-text').textContent = wpp;
-                document.getElementById('contact-map-text').textContent = address;
-                document.getElementById('contact-hours-text').textContent = hours;
-                
-                const iframe = document.getElementById('contact-map-iframe');
-                if (data.mapUrl && data.mapUrl.includes('google.com/maps')) {
-                     try {
-                        const url = new URL(data.mapUrl);
-                        if (url.pathname.includes('/place/')) {
-                             iframe.src = `https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey.split('AIza')[1]}&q=${encodeURIComponent(address)}`;
-                        } else if (url.searchParams.get('pb')) {
-                             iframe.src = data.mapUrl.replace('/maps?', '/maps/embed?');
-                        } else {
-                             iframe.src = defaults.mapUrl;
-                        }
-                     } catch (e) {
-                          iframe.src = defaults.mapUrl;
-                     }
-                } else if (!data.mapUrl) {
-                    iframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3287.619089201919!2d-58.70588102377481!3d-34.51261175373656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcbd0643b17c75%3A0x633d07d4e46358c!2sD'El%C3%ADa%2C+Maestro+4969%2C+B1665+Jos%C3%A9+C.+Paz%2C+Provincia+de+Buenos+Aires!5e0!3m2!1ses-419!2sar!4v1731037415442!5m2!1ses-419!2sar";
-                }
-            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
             
-            async function showDetalleAutoModal(carId) {
-                const modal = document.getElementById('detalle-auto-modal');
-                const loader = document.getElementById('detalle-auto-loader');
-                const body = document.getElementById('detalle-auto-body');
-                
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.classList.add('overflow-hidden');
-                
-                animate('div[data-motion-target="detalle-modal"]', 
-                    { opacity: [0, 1], scale: [0.95, 1] }, 
-                    { duration: 0.3, ease: "ease-out" }
-                );
-                
-                loader.classList.remove('hidden');
-                body.classList.add('hidden');
-                
-                const car = cachedCarData.find(c => c.id === carId);
-                
-                if (!car) {
-                    try {
-                        const carDoc = await getDoc(doc(db, `${PUBLIC_DATA_PATH}/cars/${carId}`));
-                        if (carDoc.exists()) {
-                            renderDetalleAuto(carDoc.data());
-                        } else {
-                            loader.innerHTML = '<p class="text-red-500">Error: Auto no encontrado.</p>';
-                        }
-                    } catch (error) {
-                        loader.innerHTML = '<p class="text-red-500">Error al cargar el auto.</p>';
-                    }
-                } else {
-                    renderDetalleAuto(car);
-                }
-            }
+            loader.classList.remove('hidden');
+            body.classList.add('hidden');
             
-            function renderDetalleAuto(car) {
-                const loader = document.getElementById('detalle-auto-loader');
-                const body = document.getElementById('detalle-auto-body');
-
-                const precioFormateado = car.precio 
-                    ? `$${new Intl.NumberFormat('es-AR').format(car.precio)}`
-                    : 'Consultar Precio';
-                const kmFormateado = car.km 
-                    ? `${new Intl.NumberFormat('es-AR').format(car.km)} km`
-                    : 'N/A';
-                const wppMsg = `Hola, estoy interesado en el ${car.marca} ${car.modelo} (${car.ano}) que vi en la web.`;
-                const wppLink = `https://api.whatsapp.com/send?phone=${document.getElementById('contact-wpp-text').textContent.replace(/\D/g, '')}&text=${encodeURIComponent(wppMsg)}`;
-
-                document.getElementById('detalle-auto-titulo').textContent = `${car.marca} ${car.modelo}`;
-                document.getElementById('detalle-auto-precio').textContent = precioFormateado;
-                document.getElementById('detalle-auto-ano').textContent = car.ano || 'N/A';
-                document.getElementById('detalle-auto-km').textContent = kmFormateado;
-                document.getElementById('detalle-auto-marca').textContent = car.marca || 'N/A';
-                document.getElementById('detalle-auto-descripcion').textContent = car.descripcion || 'Sin descripción.';
-                document.getElementById('detalle-auto-wpp-btn').href = wppLink;
-
-                const mainImg = document.getElementById('detalle-auto-img-main');
-                const thumbs = document.getElementById('detalle-auto-img-thumbs');
-                thumbs.innerHTML = '';
-                
-                if (car.imageUrls && car.imageUrls.length > 0) {
-                    mainImg.src = car.imageUrls[0];
-                    
-                    car.imageUrls.forEach(url => {
-                        const thumb = document.createElement('img');
-                        thumb.src = url;
-                        thumb.className = 'w-16 h-12 md:w-20 md:h-16 object-cover rounded-md cursor-pointer border-2 border-transparent hover:border-white transition-all';
-                        thumb.onclick = () => { mainImg.src = url; };
-                        thumbs.appendChild(thumb);
-                    });
-                } else {
-                    mainImg.src = 'https://placehold.co/800x600/111827/4b5563?text=Sin+Foto';
-                }
-
-                loader.classList.add('hidden');
-                body.classList.remove('hidden');
-                
-                // Re-renderizar íconos de Lucide dentro del modal
-                window.lucide.createIcons();
-            }
-
-            function closeDetalleAutoModal() {
-                animate('div[data-motion-target="detalle-modal"]', 
-                    { opacity: 0, scale: 0.95 }, 
-                    { duration: 0.2, ease: "ease-in" }
-                ).finished.then(() => {
-                    const modal = document.getElementById('detalle-auto-modal');
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
-                    document.body.classList.remove('overflow-hidden');
-                });
-            }
-            
-            // --- Lógica de Renderizado (Admin) ---
-
-            function renderAdminCarList() {
-                const list = document.getElementById('admin-car-list');
-                const loader = document.getElementById('admin-car-list-loader');
-                const noCars = document.getElementById('admin-no-cars');
-                
-                list.innerHTML = '';
-                
-                if (cachedCarData.length > 0) {
-                    cachedCarData.forEach(car => {
-                        list.appendChild(createAdminCarItem(car));
-                    });
-                    loader.classList.add('hidden');
-                    noCars.classList.add('hidden');
-                } else {
-                    loader.classList.add('hidden');
-                    noCars.classList.remove('hidden');
-                }
-                
-                // Re-renderizar íconos de Lucide
-                window.lucide.createIcons();
-            }
-
-            function createAdminCarItem(car) {
-                const item = document.createElement('div');
-                item.className = 'bg-gray-900/50 p-3 rounded-lg flex items-center justify-between transition-colors hover:bg-gray-900/80';
-                
-                const imageUrl = car.imageUrls && car.imageUrls.length > 0
-                    ? car.imageUrls[0]
-                    : 'https://placehold.co/100x100/4b5563/9ca3af?text=Sin+Foto';
-
-                item.innerHTML = `
-                    <div class="flex items-center gap-3 overflow-hidden">
-                        <img src="${imageUrl}" alt="${car.marca}" class="w-16 h-12 object-cover rounded-md flex-shrink-0">
-                        <div class="overflow-hidden">
-                            <p class="font-bold text-white truncate">${car.marca} ${car.modelo}</p>
-                            <p class="text-sm ${car.status?.vendido ? 'text-red-500 font-bold' : 'text-gray-400'}">
-                                ${car.status?.vendido ? 'VENDIDO' : 'Publicado'}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0 space-x-1 sm:space-x-2">
-                        <button class="admin-edit-btn p-2 text-gray-400 hover:text-blue-500" data-id="${car.id}">
-                            <i data-lucide="edit" class="w-5 h-5"></i>
-                        </button>
-                        <button class="admin-delete-btn p-2 text-gray-400 hover:text-red-500" data-id="${car.id}">
-                            <i data-lucide="trash-2" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                `;
-                
-                item.querySelector('.admin-edit-btn').onclick = (e) => { e.stopPropagation(); handleEditCar(car.id); };
-                item.querySelector('.admin-delete-btn').onclick = (e) => { e.stopPropagation(); handleDeleteCar(car.id); };
-                
-                return item;
-            }
-
-            function fillContactForm(data) {
-                const defaults = {
-                    wpp: '5491112345678',
-                    address: 'D Elia Maestro 4969, José C. Paz, Provincia de Buenos Aires',
-                    mapUrl: 'https://www.google.com/maps?q=D+Elia+Maestro+4969,+Jos%C3%A9+C.+Paz',
-                    hours: 'Lunes a Sábado: 9 a.m. – 7:15 p.m.'
-                };
-                
-                document.getElementById('contact-form-wpp').value = data.wpp || defaults.wpp;
-                document.getElementById('contact-form-address').value = data.address || defaults.address;
-                document.getElementById('contact-form-map-url').value = data.mapUrl || defaults.mapUrl;
-                document.getElementById('contact-form-hours').value = data.hours || defaults.hours;
-            }
-
-            // --- Lógica de Formularios (Admin) ---
-
-            async function handleContactFormSubmit(e) {
-                e.preventDefault();
-                const btn = document.getElementById('admin-contact-submit-btn');
-                btn.disabled = true;
-                btn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...';
-
-                const data = {
-                    wpp: document.getElementById('contact-form-wpp').value,
-                    address: document.getElementById('contact-form-address').value,
-                    mapUrl: document.getElementById('contact-form-map-url').value,
-                    hours: document.getElementById('contact-form-hours').value
-                };
-
+            const car = cachedCarData.find(c => c.id === carId) || await (async () => {
                 try {
-                    await setDoc(siteConfigDoc, data, { merge: true });
-                    showNotification("Info de contacto guardada con éxito");
+                    const carDoc = await getDoc(doc(db, `${PUBLIC_DATA_PATH}/cars/${carId}`));
+                    return carDoc.exists() ? carDoc.data() : null;
                 } catch (error) {
-                    console.error("Error al guardar info de contacto:", error);
-                    showNotification("Error al guardar la información", true);
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = 'Guardar Info de Contacto';
+                    return null;
                 }
+            })();
+            
+            if (car) {
+                renderDetalleAuto(car);
+            } else {
+                loader.innerHTML = '<p class="text-red-500">Error: Auto no encontrado.</p>';
+            }
+        }
+        
+        function renderDetalleAuto(car) {
+            const loader = document.getElementById('detalle-auto-loader');
+            const body = document.getElementById('detalle-auto-body');
+
+            const precioFormateado = car.precio 
+                ? `$${new Intl.NumberFormat('es-AR').format(car.precio)}`
+                : 'Consultar Precio';
+            const kmFormateado = car.km 
+                ? `${new Intl.NumberFormat('es-AR').format(car.km)} km`
+                : 'N/A';
+            const wppMsg = `Hola, estoy interesado en el ${car.marca} ${car.modelo} (${car.ano}) que vi en la web.`;
+            const wppLink = `https://api.whatsapp.com/send?phone=${document.getElementById('contact-wpp-text').textContent.replace(/\D/g, '')}&text=${encodeURIComponent(wppMsg)}`;
+
+            document.getElementById('detalle-auto-titulo').textContent = `${car.marca} ${car.modelo}`;
+            document.getElementById('detalle-auto-precio').textContent = precioFormateado;
+            document.getElementById('detalle-auto-ano').textContent = car.ano || 'N/A';
+            document.getElementById('detalle-auto-km').textContent = kmFormateado;
+            document.getElementById('detalle-auto-marca').textContent = car.marca || 'N/A';
+            document.getElementById('detalle-auto-descripcion').textContent = car.descripcion || 'Sin descripción.';
+            document.getElementById('detalle-auto-wpp-btn').href = wppLink;
+
+            const mainImg = document.getElementById('detalle-auto-img-main');
+            const thumbs = document.getElementById('detalle-auto-img-thumbs');
+            thumbs.innerHTML = '';
+            
+            if (car.imageUrls && car.imageUrls.length > 0) {
+                mainImg.src = car.imageUrls[0];
+                
+                car.imageUrls.forEach((url, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = url;
+                    thumb.className = `w-16 h-12 md:w-20 md:h-16 object-cover rounded-md cursor-pointer border-2 transition-all ${index === 0 ? 'border-aj-brand' : 'border-transparent'} hover:border-aj-brand`;
+                    thumb.onclick = (e) => { 
+                        mainImg.src = url;
+                        thumbs.querySelectorAll('img').forEach(t => t.classList.replace('border-aj-brand', 'border-transparent'));
+                        e.target.classList.replace('border-transparent', 'border-aj-brand');
+                    };
+                    thumbs.appendChild(thumb);
+                });
+            } else {
+                mainImg.src = 'https://placehold.co/800x600/111111/555555?text=Sin+Foto';
             }
 
-            function showCarFormModal(car = null) {
-                const modal = document.getElementById('car-form-modal');
-                const form = document.getElementById('car-form');
-                const title = document.getElementById('car-form-title');
-                const idInput = document.getElementById('car-form-id');
-                const vendidoCheckbox = document.getElementById('car-form-vendido');
-                const imagePreviews = document.getElementById('car-form-image-previews');
+            loader.classList.add('hidden');
+            body.classList.remove('hidden');
+            lucide.createIcons();
+        }
 
-                form.reset(); 
-                imagePreviews.innerHTML = ''; 
-                resetUploadUI(); 
-                newCarImageFiles = [];
+        function closeDetalleAutoModal() {
+            const modal = document.getElementById('detalle-auto-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+        }
 
-                if (car) {
-                    currentCarToEdit = car; 
-                    title.textContent = 'Modificar Vehículo';
-                    idInput.value = car.id;
-                    document.getElementById('car-form-marca').value = car.marca || '';
-                    document.getElementById('car-form-modelo').value = car.modelo || '';
-                    document.getElementById('car-form-precio').value = car.precio || '';
-                    document.getElementById('car-form-ano').value = car.ano || '';
-                    document.getElementById('car-form-km').value = car.km || '';
-                    document.getElementById('car-form-descripcion').value = car.descripcion || '';
-                    vendidoCheckbox.checked = car.status?.vendido || false;
-                    
-                    if (car.imageUrls && car.imageUrls.length > 0) {
-                        car.imageUrls.forEach(url => { 
-                            if (url) imagePreviews.appendChild(createImagePreview(url, false));
-                        });
-                    }
-                } else {
-                    currentCarToEdit = null;
-                    title.textContent = 'Agregar Auto Nuevo';
-                    idInput.value = '';
-                    vendidoCheckbox.checked = false;
-                }
+        
+        // --- Lógica de Renderizado (Admin) ---
+        function renderAdminCarList() {
+            const list = document.getElementById('admin-car-list');
+            const loader = document.getElementById('admin-car-list-loader');
+            const noCars = document.getElementById('admin-no-cars');
+            
+            list.innerHTML = '';
+            
+            if (cachedCarData.length > 0) {
+                cachedCarData.forEach(car => {
+                    list.appendChild(createAdminCarItem(car));
+                });
+                loader.classList.add('hidden');
+                noCars.classList.add('hidden');
+            } else {
+                loader.classList.add('hidden');
+                noCars.classList.remove('hidden');
+            }
+            lucide.createIcons();
+        }
 
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.classList.add('overflow-hidden');
-                
-                // Re-renderizar íconos
+        function createAdminCarItem(car) {
+            const item = document.createElement('div');
+            item.className = 'bg-aj-gray-light p-3 rounded-lg flex items-center justify-between border border-gray-200';
+            
+            const imageUrl = car.imageUrls && car.imageUrls.length > 0
+                ? car.imageUrls[0]
+                : 'https://placehold.co/100x100/EAEAEA/999999?text=Sin+Foto';
+
+            item.innerHTML = `
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <img src="${imageUrl}" alt="${car.marca}" class="w-16 h-12 object-cover rounded-md flex-shrink-0">
+                    <div class="overflow-hidden">
+                        <p class="font-bold text-aj-dark truncate">${car.marca} ${car.modelo}</p>
+                        <p class="text-sm text-aj-text-light">${car.status?.vendido ? '<span class="font-bold text-red-600">VENDIDO</span>' : 'Publicado'}</p>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 space-x-1">
+                    <button class="admin-edit-btn p-2 text-aj-text-light hover:text-aj-brand" data-id="${car.id}" title="Editar">
+                        <i data-lucide="edit" class="w-5 h-5"></i>
+                    </button>
+                    <button class="admin-delete-btn p-2 text-aj-text-light hover:text-red-600" data-id="${car.id}" title="Eliminar">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            `;
+            
+            item.querySelector('.admin-edit-btn').onclick = (e) => { e.stopPropagation(); handleEditCar(car.id); };
+            item.querySelector('.admin-delete-btn').onclick = (e) => { e.stopPropagation(); handleDeleteCar(car.id); };
+            
+            return item;
+        }
+
+        function fillContactForm(data) {
+            const defaults = {
+                wpp: '5491112345678',
+                address: 'D Elia Maestro 4969, José C. Paz, Provincia de Buenos Aires',
+                mapUrl: 'https://www.google.com/maps?q=D+Elia+Maestro+4969,+Jos%C3%A9+C.+Paz',
+                hours: 'Lunes a Sábado: 9 a.m. – 7:15 p.m. (flexible)'
+            };
+            
+            document.getElementById('contact-form-wpp').value = data.wpp || defaults.wpp;
+            document.getElementById('contact-form-address').value = data.address || defaults.address;
+            document.getElementById('contact-form-map-url').value = data.mapUrl || defaults.mapUrl;
+            document.getElementById('contact-form-hours').value = data.hours || defaults.hours;
+        }
+
+        // --- Lógica de Formularios (Admin) ---
+        async function handleContactFormSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('admin-contact-submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = 'Guardando...';
+
+            const data = {
+                wpp: document.getElementById('contact-form-wpp').value,
+                address: document.getElementById('contact-form-address').value,
+                mapUrl: document.getElementById('contact-form-map-url').value,
+                hours: document.getElementById('contact-form-hours').value
+            };
+
+            try {
+                await setDoc(siteConfigDoc, data, { merge: true });
+                showNotification("Info de contacto guardada con éxito");
+            } catch (error) {
+                console.error("Error al guardar info de contacto:", error);
+                showNotification("Error al guardar la información", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="save" class="w-5 h-5 mr-2"></i>Guardar Info de Contacto';
                 lucide.createIcons();
             }
-            
-            function handleNewImageFiles(event) {
-                 const files = event.target.files;
-                 const imagePreviews = document.getElementById('car-form-image-previews');
-                 
-                 // Limpiar solo los previews de *nuevas* imágenes
-                 document.querySelectorAll('.new-image-preview').forEach(el => el.remove());
-                 newCarImageFiles = [];
-                 
-                 if (files.length > 0) {
-                    // Si se seleccionan nuevos archivos, limpiar también los *viejos* previews
-                    if(currentCarToEdit) {
-                        imagePreviews.innerHTML = ''; 
-                    }
-                     
-                    for(let i = 0; i < files.length; i++) {
-                        const file = files[i];
-                        newCarImageFiles.push(file);
-                        
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                             const preview = createImagePreview(e.target.result, true, i);
-                             imagePreviews.appendChild(preview);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                 } else if (currentCarToEdit && currentCarToEdit.imageUrls) {
-                     // Si se cancela la selección, volver a mostrar las imágenes existentes
-                     imagePreviews.innerHTML = '';
-                     currentCarToEdit.imageUrls.forEach(url => { 
-                         if (url) imagePreviews.appendChild(createImagePreview(url, false));
-                     });
-                 }
-            }
-            
-            function createImagePreview(url, isNew = false, index = 0) { 
-                const imgWrapper = document.createElement('div');
-                imgWrapper.className = 'relative w-24 h-20 rounded-lg overflow-hidden border border-gray-600';
-                if (isNew) {
-                    imgWrapper.classList.add('new-image-preview');
-                }
-                imgWrapper.innerHTML = `
-                    <img src="${url}" class="w-full h-full object-cover">
-                    ${isNew ? `
-                        <button type="button" data-index="${index}" class="remove-new-image-btn absolute top-0.5 right-0.5 bg-red-600 text-white rounded-full p-0.5 leading-none shadow-lg opacity-70 hover:opacity-100 transition-opacity">
-                            <i data-lucide="x" class="w-4 h-4"></i>
-                        </button>` 
-                    : 
-                    ` <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <i data-lucide="check-circle" class="w-6 h-6 text-white/80"></i>
-                      </div>`
-                    }
-                `;
-                
-                if(isNew) {
-                    imgWrapper.querySelector('.remove-new-image-btn').onclick = (e) => {
-                        e.stopPropagation();
-                        removeNewImage(Number(e.currentTarget.dataset.index));
-                    };
-                }
-                // Re-renderizar íconos
-                setTimeout(() => window.lucide.createIcons(), 0);
-                return imgWrapper;
-            }
-            
-            function removeNewImage(indexToRemove) {
-                newCarImageFiles = newCarImageFiles.filter((_, i) => i !== indexToRemove);
-                
-                // Re-renderizar los previews de archivos nuevos
-                const imagePreviews = document.getElementById('car-form-image-previews');
-                document.querySelectorAll('.new-image-preview').forEach(el => el.remove());
-                
-                newCarImageFiles.forEach((file, i) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                         const preview = createImagePreview(e.target.result, true, i);
-                         imagePreviews.appendChild(preview);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
+        }
 
-            function closeCarFormModal() {
-                const modal = document.getElementById('car-form-modal');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                document.body.classList.remove('overflow-hidden');
+        function showCarFormModal(car = null) {
+            const modal = document.getElementById('car-form-modal');
+            const form = document.getElementById('car-form');
+            const title = document.getElementById('car-form-title');
+            const idInput = document.getElementById('car-form-id');
+            const vendidoCheckbox = document.getElementById('car-form-vendido');
+            const imagePreviews = document.getElementById('car-form-image-previews');
+
+            form.reset(); 
+            imagePreviews.innerHTML = ''; 
+            resetUploadUI(); 
+
+            if (car) {
+                currentCarToEdit = car; 
+                title.textContent = 'Modificar Vehículo';
+                idInput.value = car.id;
+                document.getElementById('car-form-marca').value = car.marca || '';
+                document.getElementById('car-form-modelo').value = car.modelo || '';
+                document.getElementById('car-form-precio').value = car.precio || '';
+                document.getElementById('car-form-ano').value = car.ano || '';
+                document.getElementById('car-form-km').value = car.km || '';
+                document.getElementById('car-form-descripcion').value = car.descripcion || '';
+                vendidoCheckbox.checked = car.status?.vendido || false;
+                
+                if (car.imageUrls && car.imageUrls.length > 0) {
+                    car.imageUrls.forEach(url => { 
+                        if (url) imagePreviews.appendChild(createImagePreview(url));
+                    });
+                }
+            } else {
                 currentCarToEdit = null;
-                newCarImageFiles = [];
+                title.textContent = 'Agregar Auto Nuevo';
+                idInput.value = '';
+                vendidoCheckbox.checked = false;
             }
 
-            async function handleCarFormSubmit(e) {
-                e.preventDefault();
-                const submitBtn = document.getElementById('car-form-submit-btn');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+            lucide.createIcons();
+        }
+        
+        function createImagePreview(url) { 
+            const imgWrapper = document.createElement('div');
+            imgWrapper.className = 'relative w-24 h-20 rounded-lg overflow-hidden border border-gray-200';
+            imgWrapper.innerHTML = `<img src="${url}" class="w-full h-full object-cover">`;
+            return imgWrapper;
+        }
 
-                const carId = document.getElementById('car-form-id').value;
-                const files = newCarImageFiles;
-                
-                let imageUrls = currentCarToEdit?.imageUrls || []; 
+        function closeCarFormModal() {
+            const modal = document.getElementById('car-form-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+            currentCarToEdit = null;
+        }
 
-                if (files.length > 0) {
-                    imageUrls = []; // Si hay archivos nuevos, REEMPLAZAMOS todas las fotos
-                    try {
-                        const uploadProgressDiv = document.getElementById('car-form-upload-progress');
-                        const uploadBar = document.getElementById('car-form-upload-bar');
-                        const uploadStatus = document.getElementById('car-form-upload-status');
-                        uploadProgressDiv.classList.remove('hidden');
-                        uploadStatus.classList.remove('hidden');
-                        uploadBar.style.width = '0%';
-                        
-                        const processedImages = [];
-                        for (let i = 0; i < files.length; i++) {
-                            uploadStatus.textContent = `Comprimiendo foto ${i + 1} de ${files.length}...`;
-                            const base64String = await resizeImage(files[i]);
-                            processedImages.push(base64String);
-                            uploadBar.style.width = `${((i + 1) / files.length) * 100}%`;
-                        }
-                        
-                        imageUrls = processedImages; 
-                        uploadStatus.textContent = "¡Fotos comprimidas!";
-                        
-                    } catch (error) {
-                        showNotification("Error al comprimir las fotos", true);
-                        resetSubmitButton();
-                        resetUploadUI();
-                        return;
+        async function handleCarFormSubmit(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('car-form-submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+
+            const carId = document.getElementById('car-form-id').value;
+            const files = document.getElementById('car-form-fotos').files;
+            
+            let imageUrls = currentCarToEdit?.imageUrls || []; 
+
+            if (files.length > 0) {
+                try {
+                    const uploadProgressDiv = document.getElementById('car-form-upload-progress');
+                    const uploadBar = document.getElementById('car-form-upload-bar');
+                    const uploadStatus = document.getElementById('car-form-upload-status');
+                    uploadProgressDiv.classList.remove('hidden');
+                    uploadStatus.classList.remove('hidden');
+                    uploadBar.style.width = '0%';
+                    
+                    const processedImages = [];
+                    for (let i = 0; i < files.length; i++) {
+                        uploadStatus.textContent = `Comprimiendo foto ${i + 1} de ${files.length}...`;
+                        const base64String = await resizeImage(files[i]);
+                        processedImages.push(base64String);
+                        uploadBar.style.width = `${((i + 1) / files.length) * 100}%`;
                     }
-                }
-                
-                if (imageUrls.length === 0) {
-                    showNotification("Debes agregar al menos una foto", true);
+                    
+                    imageUrls = processedImages; 
+                    uploadStatus.textContent = "¡Fotos comprimidas!";
+                    
+                } catch (error) {
+                    showNotification("Error al comprimir las fotos", true);
                     resetSubmitButton();
                     resetUploadUI();
                     return;
                 }
-
-                const carData = {
-                    marca: document.getElementById('car-form-marca').value,
-                    modelo: document.getElementById('car-form-modelo').value,
-                    precio: Number(document.getElementById('car-form-precio').value),
-                    ano: Number(document.getElementById('car-form-ano').value),
-                    km: Number(document.getElementById('car-form-km').value),
-                    descripcion: document.getElementById('car-form-descripcion').value,
-                    status: {
-                        vendido: document.getElementById('car-form-vendido').checked
-                    },
-                    imageUrls: imageUrls 
-                };
-
-                try {
-                    if (carId) {
-                        const carDoc = doc(db, `${PUBLIC_DATA_PATH}/cars/${carId}`);
-                        await updateDoc(carDoc, { ...carData, updatedAt: serverTimestamp() });
-                        showNotification("Vehículo modificado con éxito");
-                    } else {
-                        await addDoc(carCollection, { ...carData, createdAt: serverTimestamp() });
-                        showNotification("Vehículo agregado con éxito");
-                    }
-                    closeCarFormModal();
-                } catch (error) {
-                    console.error("Error guardando en Firestore:", error);
-                    if (error.code === 'invalid-argument' && error.message.includes('bytes')) {
-                         showNotification("Error: Una foto es demasiado grande (Límite 1MB).", true);
-                    } else {
-                         showNotification("Error al guardar en base de datos", true);
-                    }
-                } finally {
-                    resetSubmitButton();
-                    resetUploadUI();
-                }
             }
             
-            function resetSubmitButton() {
-                const submitBtn = document.getElementById('car-form-submit-btn');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Guardar Vehículo';
+            if (imageUrls.length === 0) {
+                showNotification("Debes agregar al menos una foto", true);
+                resetSubmitButton();
+                resetUploadUI();
+                return;
             }
 
-            function handleEditCar(carId) {
-                const car = cachedCarData.find(c => c.id === carId);
-                if (car) { showCarFormModal(car); } 
-                else { showNotification("Error: no se encontró ese auto", true); }
-            }
+            const carData = {
+                marca: document.getElementById('car-form-marca').value,
+                modelo: document.getElementById('car-form-modelo').value,
+                precio: Number(document.getElementById('car-form-precio').value),
+                ano: Number(document.getElementById('car-form-ano').value),
+                km: Number(document.getElementById('car-form-km').value),
+                descripcion: document.getElementById('car-form-descripcion').value,
+                status: {
+                    vendido: document.getElementById('car-form-vendido').checked
+                },
+                imageUrls: imageUrls 
+            };
 
-            function handleDeleteCar(carId) {
-                currentCarIdToDelete = carId;
-                const modal = document.getElementById('delete-modal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.classList.add('overflow-hidden');
-            }
-
-            function closeDeleteModal() {
-                const modal = document.getElementById('delete-modal');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                document.body.classList.remove('overflow-hidden');
-                currentCarIdToDelete = null;
-            }
-
-            async function confirmDeleteCar() {
-                if (!currentCarIdToDelete) return;
-                const carId = currentCarIdToDelete;
-                closeDeleteModal(); 
-
-                try {
-                    await deleteDoc(doc(db, `${PUBLIC_DATA_PATH}/cars/${carId}`));
-                    showNotification("Vehículo eliminado permanentemente");
-                } catch (error) {
-                    showNotification("Error al eliminar el vehículo", true);
-                }
-            }
-
-
-            // --- Lógica de Procesamiento de Imágenes (Base64) ---
-            function resizeImage(file) {
-                return new Promise((resolve, reject) => {
-                    const MAX_WIDTH = 1024; 
-                    const MAX_HEIGHT = 1024;
-                    const QUALITY = 0.7; 
-
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = (event) => {
-                        const img = new Image();
-                        img.src = event.target.result;
-                        img.onload = () => {
-                            let width = img.width;
-                            let height = img.height;
-                            if (width > height) {
-                                if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                            } else {
-                                if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                            }
-                            const canvas = document.createElement('canvas');
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-                            const dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
-                            resolve(dataUrl);
-                        };
-                        img.onerror = (error) => { reject(error); };
-                    };
-                    reader.onerror = (error) => { reject(error); };
-                });
-            }
-
-            function resetUploadUI() {
-                document.getElementById('car-form-upload-progress').classList.add('hidden');
-                document.getElementById('car-form-upload-status').classList.add('hidden');
-                document.getElementById('car-form-upload-bar').style.width = '0%';
-                document.getElementById('car-form-upload-status').textContent = '';
-                document.getElementById('car-form-fotos').value = null;
-            }
-            
-            // --- Utilidades ---
-
-            function showNotification(message, isError = false) {
-                const toast = document.getElementById('notification-toast');
-                const messageEl = document.getElementById('notification-message');
-                messageEl.textContent = message;
-                if (isError) {
-                    toast.classList.add('bg-red-600', 'text-white');
-                    toast.classList.remove('bg-gray-900', 'text-white');
+            try {
+                if (carId) {
+                    const carDoc = doc(db, `${PUBLIC_DATA_PATH}/cars/${carId}`);
+                    await updateDoc(carDoc, { ...carData, updatedAt: serverTimestamp() });
+                    showNotification("Vehículo modificado con éxito");
                 } else {
-                    toast.classList.remove('bg-red-600', 'text-white');
-                    toast.classList.add('bg-gray-900', 'text-white');
+                    await addDoc(carCollection, { ...carData, createdAt: serverTimestamp() });
+                    showNotification("Vehículo agregado con éxito");
                 }
-                toast.classList.remove('translate-x-[200%]');
-                setTimeout(() => {
-                    toast.classList.add('translate-x-[200%]');
-                }, 3000); 
+                closeCarFormModal();
+            } catch (error) {
+                console.error("Error guardando en Firestore:", error);
+                if (error.code === 'invalid-argument' && error.message.includes('bytes')) {
+                     showNotification("Error: Una foto es demasiado grande. Intenta con menos fotos.", true);
+                } else {
+                     showNotification("Error al guardar en base de datos", true);
+                }
+            } finally {
+                resetSubmitButton();
+                resetUploadUI();
             }
-            
-            // --- Configuración de Animaciones ---
-            
-            function setupAnimations() {
-                // Animación Hero
-                animate('img[data-motion-target="hero-logo"]', { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, delay: 0.2, ease: "ease-out" });
-                animate('h1[data-motion-target="hero-title"]', { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, delay: 0.4, ease: "ease-out" });
-                animate('p[data-motion-target="hero-subtitle"]', { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, delay: 0.6, ease: "ease-out" });
-                animate('a[data-motion-target="hero-button"]', { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, delay: 0.8, ease: "ease-out" });
+        }
+        
+        function resetSubmitButton() {
+            const submitBtn = document.getElementById('car-form-submit-btn');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i data-lucide="check" class="w-5 h-5 mr-2 -ml-1"></i>Guardar Vehículo';
+            lucide.createIcons();
+        }
 
-                // Animación de Header Hide/Show
-                let lastScrollY = window.scrollY;
-                const header = document.getElementById('main-header');
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > lastScrollY && window.scrollY > 200) {
-                        header.classList.add('is-hidden');
-                    } else {
-                        header.classList.remove('is-hidden');
-                    }
-                    lastScrollY = window.scrollY;
-                });
-                
-                // Animaciones de Scroll (Secciones)
-                inView('h2[data-motion-target="destacados-title"]', () => {
-                     animate('h2[data-motion-target="destacados-title"]', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5 });
-                });
-                inView('h2[data-motion-target="catalogo-title"]', () => {
-                     animate('h2[data-motion-target="catalogo-title"]', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5 });
-                });
-                inView('div[data-motion-target="catalogo-filters"]', () => {
-                     animate('div[data-motion-target="catalogo-filters"]', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5 });
-                });
-                inView('h2[data-motion-target="contacto-title"]', () => {
-                     animate('h2[data-motion-target="contacto-title"]', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5 });
-                });
-                inView('div[data-motion-target="contacto-info"]', () => {
-                     animate('div[data-motion-target="contacto-info"]', { opacity: [0, 1], x: [-50, 0] }, { duration: 0.6, delay: 0.2 });
-                });
-                inView('div[data-motion-target="contacto-map"]', () => {
-                     animate('div[data-motion-target="contacto-map"]', { opacity: [0, 1], x: [50, 0] }, { duration: 0.6, delay: 0.2 });
-                });
+        function handleEditCar(carId) {
+            const car = cachedCarData.find(c => c.id === carId);
+            if (car) { showCarFormModal(car); } 
+            else { showNotification("Error: no se encontró ese auto", true); }
+        }
+
+        function handleDeleteCar(carId) {
+            currentCarIdToDelete = carId;
+            const modal = document.getElementById('delete-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('delete-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+            currentCarIdToDelete = null;
+        }
+
+        async function confirmDeleteCar() {
+            if (!currentCarIdToDelete) return;
+            const carId = currentCarIdToDelete;
+            closeDeleteModal(); 
+
+            try {
+                await deleteDoc(doc(db, `${PUBLIC_DATA_PATH}/cars/${carId}`));
+                showNotification("Vehículo eliminado permanentemente");
+            } catch (error) {
+                showNotification("Error al eliminar el vehículo", true);
             }
-            
-            function animateCardsIn(cards) {
-                animate(cards, 
-                    { opacity: [0, 1], y: [30, 0] }, 
-                    { duration: 0.5, delay: (i) => i * 0.05, ease: "ease-out" }
-                );
-            }
+        }
 
-            // --- Configuración de Listeners de UI ---
 
-            function setupEventListeners() {
-                window.addEventListener('hashchange', handleRouting);
-                
-                document.querySelectorAll('.nav-link, .nav-link-mobile').forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        document.getElementById('mobile-menu').classList.add('hidden');
-                        const hash = link.getAttribute('href');
-                        if(window.location.hash === hash && (hash.startsWith('#') && hash.includes('-section') || hash === '#home')) {
-                            // Forzar el re-route si se hace clic en el ancla actual
-                            handleRouting();
+        // --- Lógica de Procesamiento de Imágenes ---
+        function resizeImage(file) {
+            return new Promise((resolve, reject) => {
+                const MAX_WIDTH = 1024; 
+                const MAX_HEIGHT = 1024;
+                const QUALITY = 0.7; 
+
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > height) {
+                            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        } else {
+                            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
                         }
-                    });
-                });
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
+                        resolve(dataUrl);
+                    };
+                    img.onerror = (error) => { reject(error); };
+                };
+                reader.onerror = (error) => { reject(error); };
+            });
+        }
 
-                document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-                    document.getElementById('mobile-menu').classList.toggle('hidden');
-                });
-                
-                document.getElementById('filter-marca').addEventListener('change', renderCatalogo);
-                document.getElementById('filter-precio').addEventListener('change', renderCatalogo);
-                document.getElementById('filter-ano').addEventListener('change', renderCatalogo);
-                document.getElementById('filter-sort').addEventListener('change', renderCatalogo);
-                
-                document.getElementById('detalle-auto-close-btn').addEventListener('click', closeDetalleAutoModal);
-                
-                document.getElementById('admin-login-form').addEventListener('submit', handleAdminLogin);
-                document.getElementById('admin-logout-btn').addEventListener('click', handleAdminLogout);
-                
-                document.getElementById('admin-contact-form').addEventListener('submit', handleContactFormSubmit);
-                
-                document.getElementById('admin-add-car-btn').addEventListener('click', () => showCarFormModal());
-                document.getElementById('car-form').addEventListener('submit', handleCarFormSubmit);
-                document.getElementById('car-form-close-btn').addEventListener('click', closeCarFormModal);
-                document.getElementById('car-form-cancel-btn').addEventListener('click', closeCarFormModal);
-                document.getElementById('car-form-fotos').addEventListener('change', handleNewImageFiles);
+        function resetUploadUI() {
+            document.getElementById('car-form-upload-progress').classList.add('hidden');
+            document.getElementById('car-form-upload-status').classList.add('hidden');
+            document.getElementById('car-form-upload-bar').style.width = '0%';
+            document.getElementById('car-form-upload-status').textContent = '';
+        }
+        
 
-                document.getElementById('delete-modal-cancel-btn').addEventListener('click', closeDeleteModal);
-                document.getElementById('delete-modal-confirm-btn').addEventListener('click', confirmDeleteCar);
+        // --- Utilidades ---
+        function showNotification(message, isError = false) {
+            const toast = document.getElementById('notification-toast');
+            const messageEl = document.getElementById('notification-message');
+            messageEl.textContent = message;
+            if (isError) {
+                toast.classList.add('bg-red-600', 'text-white');
+                toast.classList.remove('bg-aj-dark');
+            } else {
+                toast.classList.remove('bg-red-600');
+                toast.classList.add('bg-aj-dark', 'text-white');
             }
+            toast.classList.remove('translate-x-[200%]');
+            setTimeout(() => {
+                toast.classList.add('translate-x-[200%]');
+            }, 3000); 
+        }
+        
+        // --- Animación de Scroll (Nav Activo + Animate.css) ---
+        function setupScrollAnimations() {
+            // Secciones a observar
+            const sections = document.querySelectorAll('.animate-on-scroll');
+            // Secciones de la NAV
+            const navSections = document.querySelectorAll('#home, #ultimos-ingresos-section, #catalogo-section, #contacto-section');
             
-initializeMainApp();
+            // Observer para animaciones de entrada (Animate.css)
+            const animationObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                        entry.target.style.opacity = 1; // Hacer visible
+                        observer.unobserve(entry.target); // No animar de nuevo
+                    }
+                });
+            }, { threshold: 0.1 });
 
-}); // Cierre del listener 'load'
+            sections.forEach(section => {
+                if(section) animationObserver.observe(section);
+            });
+            
+            // Observer para la NAV activa
+            const navObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const id = entry.target.id;
+                    const isNavSection = ['home', 'ultimos-ingresos-section', 'catalogo-section', 'contacto-section'].includes(id);
+
+                    if (entry.isIntersecting && isNavSection && window.location.hash !== '#admin') {
+                        document.querySelectorAll('.nav-link:not([href="#admin"])').forEach(link => {
+                            link.classList.remove('border-aj-brand', 'text-aj-dark', 'border-l-4');
+                            link.classList.add('border-transparent', 'text-aj-text-light');
+                        });
+
+                        const matchingLinks = document.querySelectorAll(`.nav-link[href="#${id}"]`);
+                        matchingLinks.forEach(link => {
+                            link.classList.add('border-aj-brand', 'text-aj-dark', 'border-l-4');
+                            link.classList.remove('border-transparent', 'text-aj-text-light');
+                        });
+                    }
+                });
+            }, { 
+                threshold: 0.1,
+                rootMargin: "-40% 0px -40% 0px" // Activa cuando la sección está en el medio
+            }); 
+
+            navSections.forEach(section => {
+                if(section) navObserver.observe(section);
+            });
+            
+            // Animación "shake" para login (Animate.css)
+            // No es necesario añadir CSS, ya usamos 'animate__shakeX' en JS
+        }
+        
+        // --- Configuración de Listeners de UI ---
+        function setupEventListeners() {
+            window.addEventListener('hashchange', handleRouting);
+            window.addEventListener('load', handleRouting);
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                });
+            });
+
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            });
+            
+            document.getElementById('filter-marca').addEventListener('change', renderCatalogo);
+            document.getElementById('filter-precio').addEventListener('change', renderCatalogo);
+            document.getElementById('filter-ano').addEventListener('change', renderCatalogo);
+            document.getElementById('filter-sort').addEventListener('change', renderCatalogo);
+            
+            document.getElementById('detalle-auto-close-btn').addEventListener('click', closeDetalleAutoModal);
+            
+            document.getElementById('admin-login-form').addEventListener('submit', handleAdminLogin);
+            document.getElementById('admin-logout-btn').addEventListener('click', handleAdminLogout);
+            
+            document.getElementById('admin-contact-form').addEventListener('submit', handleContactFormSubmit);
+            
+            document.getElementById('admin-add-car-btn').addEventListener('click', () => showCarFormModal());
+            document.getElementById('car-form').addEventListener('submit', handleCarFormSubmit);
+            document.getElementById('car-form-close-btn').addEventListener('click', closeCarFormModal);
+            document.getElementById('car-form-cancel-btn').addEventListener('click', closeCarFormModal);
+
+            document.getElementById('delete-modal-cancel-btn').addEventListener('click', closeDeleteModal);
+            document.getElementById('delete-modal-confirm-btn').addEventListener('click', confirmDeleteCar);
+        }
+
+        // --- Iniciar la App ---
+        // (NUEVO) Esperar a que el DOM esté listo (como sugeriste)
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeMainApp();
+        });
+
     </script>
 </body>
 </html>
